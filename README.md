@@ -1,6 +1,6 @@
 # N_SR
  
-here are some implements of SR methods with Pytorch.  <br>
+There are some implements of SR methods with Pytorch.  <br>
 * DBPN in dbpn.py ([Deep Back-Projection Networks For Super-Resolution](https://arxiv.org/abs/1904.05677))
 * RDN in rdn.py ([Residual Dense Network for Image SR](https://arxiv.org/pdf/1802.08797v2.pdf))
 * EDSR in edsr.py ([Enhanced Deep Residual Networks for Single Image Super-Resolution](https://arxiv.org/abs/1707.02921))

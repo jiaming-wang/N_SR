@@ -1,0 +1,88 @@
+#!/usr/bin/env python
+# coding=utf-8
+'''
+@Author: wjm
+@Date: 2019-10-13 23:07:03
+@LastEditTime: 2020-02-18 15:52:45
+@Description: file content
+'''
+import os
+import time
+from utils.utils import  draw_curve_and_save, save_config
+import torch
+from utils.config import save_cong
+from data.dataset import data
+from data.data import get_data
+from torch.utils.data import DataLoader
+from tensorboardX import SummaryWriter
+
+class BaseSolver:
+    def __init__(self, cfg):
+        self.cfg = cfg
+        self.nEpochs = cfg['nEpochs']
+        self.checkpoint_dir = cfg['checkpoint']
+        self.epoch = 1
+        self.writer = SummaryWriter('log')
+        if cfg['gpu_mode']:
+            self.num_workers = cfg['threads']
+        else:
+            self.num_workers = 0
+
+        train_dataset = get_data(cfg, cfg['train_dataset'], cfg['data']['upsacle'])
+        self.train_loader = DataLoader(train_dataset, cfg['data']['batch_size'], shuffle=True,
+            num_workers=self.num_workers)
+        val_dataset = get_data(cfg, cfg['valid_dataset'], cfg['data']['upsacle'])
+        self.val_loader = DataLoader(val_dataset, 1, shuffle=False,
+            num_workers=self.num_workers)
+
+        self.records = {'Epoch': [], 'PSNR': [], 'SSIM': [], 'Loss': []}
+
+        if not os.path.exists(self.checkpoint_dir):
+            os.makedirs(self.checkpoint_dir)
+
+        save_cong(cfg, os.path.join('log', 'config.yml'))
+
+        save_config('Train dataset has {} images and {} batches.'.format(len(train_dataset), len(self.train_loader)))
+        save_config('Val dataset has {} images and {} batches.'.format(len(val_dataset), len(self.val_loader)))
+
+    # def save_records(self):
+        # with open(os.path.join('log', 'records.txt'), 'wt') as f:
+        #     for i in range(len(self.records['Epoch'])):
+        #         f.write('Epoch {:03d}: PSNR = {:.8f}, SSIM = {:.8f} \n'.format(
+        #             self.records['Epoch'][i],
+        #             self.records['PSNR'][i],
+        #             self.records['SSIM'][i]
+        #         ))
+        # draw_curve_and_save(self.records['Epoch'], self.records['PSNR'], 'PSNR',
+        #                           os.path.join('log', 'PSNR-Curve.pdf'), 0.1)
+        # draw_curve_and_save(self.records['Epoch'], self.records['SSIM'], 'SSIM',
+                                #   os.path.join('log', 'SSIM-Curve.pdf'), 0.001)
+
+    def load_checkpoint(self, model_path):
+        if os.path.exists(model_path):
+            ckpt = torch.load(model_path)
+            self.epoch = ckpt['epoch']
+            self.records = ckpt['records']
+        else:
+            raise FileNotFoundError
+
+    def save_checkpoint(self):
+        self.ckp = {
+            'epoch': self.epoch,
+            'records': self.records,
+        }
+
+    def train(self):
+        raise NotImplementedError
+    
+    def eval(self):
+        raise NotImplementedError
+    
+    def run(self):
+        while self.epoch <= self.nEpochs:
+            self.train()
+            self.eval()
+            self.save_checkpoint()
+            self.save_records()
+            self.epoch += 1
+        #self.logger.log('Training done.')

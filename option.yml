@@ -1,0 +1,55 @@
+#
+# @Author: wjm
+# @Date: 2019-10-13 21:45:10
+# @LastEditTime: 2019-10-13 21:46:06
+# @Description: file content
+# 
+
+name: Net
+algorithm: DBPN #[EDSR, RDN, DBPN, SRResNet]
+nEpochs: 2000
+gpu_mode: False
+gpus: [2,3]
+threads: 8
+
+seed: 123
+checkpoint: checkpoint
+data_dir: ./dataset
+train_dataset: hr
+valid_dataset: valid
+
+test:
+  algorithm: DBPN #[EDSR, RDN, DBPN, SRResNet, VDSR]
+  type: test #[test, eval]
+  data_dir: ./dataset
+  test_dataset: valid
+  model: best.pth
+
+pretrain:
+  pretrained: False
+  pre_sr: Net_epoch_1.pth
+  pre_folder: checkpoint
+
+data:
+  upsacle:  4
+  batch_size: 1
+  patch_size: 32
+  data_augmentation: False                                                                                                                                                                                               
+  n_colors: 3
+  rgb_range: 255
+  normalize : False
+
+schedule:
+  lr: 1e-4
+  decay: 1000
+  gamma: 0.1
+  optimizer: ADAM #[ADAM, SGD, RMSprop]
+  momentum: 0.9 #SGD momentum
+  beta1: 0.9 #ADAM beta
+  beta2: 0.999 #ADAM beta
+  epsilon: 1e-8 #ADAM epsilon
+  alpha: 0.9 #RMSprop alpha
+  weight_dency: 0
+  gclip: 0
+  loss: L1 #[MSE, L1, VGG22, VGG54]
+

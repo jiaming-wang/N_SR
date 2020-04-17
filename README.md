@@ -15,7 +15,7 @@ There are some implements of SR methods with Pytorch.  <br>
 * Test: `python eval.py`.
 
 ## Experiments on FEI face dateset
-
+Image-based algoritnms.
 <table>
 	<tr>
 		<td><center> </center></td>

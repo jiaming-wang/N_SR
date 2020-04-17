@@ -50,4 +50,4 @@ There are some implements of SR methods with Pytorch.  <br>
 `tensorboard --logdir log`</br>
 
 The train/test loss and PSNR curves for each experiment are shown below:</br>
-<p align="center"><img src="log.png" align="center" width=300 height=500/></p>
+<p align="center"><img src="./log.png" align="center" width=300 height=500/></p>

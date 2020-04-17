@@ -14,7 +14,7 @@ There are some implements of SR methods with Pytorch.  <br>
 * Train: `python main.py`. More details in `option.py`</br>
 * Test: `python eval.py`.
 
-## Experiments
+## Experiments on FEI face dateset
 
 <table>
 	<tr>

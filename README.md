@@ -20,6 +20,7 @@ There are some implements of SR methods with Pytorch.  <br>
 	<tr>
 		<td><center> </center></td>
 		<td><center>Bicubic</center></td>
+		<td><center>EDSR_original</center></td>
 		<td><center>EDSR+b16k64</center></td>
 		<td><center>EDSR+b32k256</center></td>
 		<td><center>RDN</center></td>
@@ -31,6 +32,9 @@ There are some implements of SR methods with Pytorch.  <br>
 		</td>
 		<td>
 			<center>36.38</center>
+		</td>
+		<td>
+			<center>39.81</center>
 		</td>
 		<td>
 			<center>39.85</center>

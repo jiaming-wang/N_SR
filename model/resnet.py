@@ -39,12 +39,12 @@ class Net(nn.Module):
             classname = m.__class__.__name__
             if classname.find('Conv2d') != -1:
         	    # torch.nn.init.kaiming_normal_(m.weight)
-        	    torch.nn.init.xavier_uniform_(m.weight, gain=1)
+        	    torch.nn.init.xavier_uniform_(m.weight, gain=0.1)
         	    if m.bias is not None:
         		    m.bias.data.zero_()
             elif classname.find('ConvTranspose2d') != -1:
         	    # torch.nn.init.kaiming_normal_(m.weight)
-        	    torch.nn.init.xavier_uniform_(m.weight, gain=1)
+        	    torch.nn.init.xavier_uniform_(m.weight, gain=0.1)
         	    if m.bias is not None:
         		    m.bias.data.zero_()
             

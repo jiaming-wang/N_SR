@@ -38,6 +38,7 @@ class DatasetFromHdf5(data.Dataset):
         return torch.from_numpy(self.data[index,:,:,:]).float(), torch.from_numpy(self.target[index,:,:,:]).float()
         
     def __len__(self):
+        print(self.data)
         return self.data.shape[0]
     
 def get_test_data(cfg, data_dir, upscale_factor):

@@ -19,7 +19,7 @@ class Net(nn.Module):
         super(Net, self).__init__()
 
         base_filter = 64
-        num_channels = 1
+        num_channels = 3
         self.head = ConvBlock(num_channels, base_filter, 3, 1, 1, activation='relu', norm=None)
 
         body = [

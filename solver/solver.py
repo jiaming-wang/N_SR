@@ -35,10 +35,10 @@ class Solver(BaseSolver):
             
             train_dataset = DatasetFromHdf5("data/train.h5")
             self.train_loader = DataLoader(train_dataset, cfg['data']['batch_size'], shuffle=True,
-                num_workers=self.num_workers)
+                num_workers=1)
             val_dataset = DatasetFromHdf5("data/train.h5")
             self.val_loader = DataLoader(val_dataset, 1, shuffle=False,
-                num_workers=self.num_workers)
+                num_workers=1)
                 
         else:
             from model.rdn import Net as net

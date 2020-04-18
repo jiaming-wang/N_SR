@@ -82,6 +82,7 @@ def augment(img_in, img_tar, img_bic, flip_h=True, rot=True):
 class Data(data.Dataset):
     def __init__(self, image_dir, patch_size, upscale_factor, data_augmentation, normalize, transform=None):
         super(Data, self).__init__()
+        
         self.image_filenames = [join(image_dir, x) for x in listdir(image_dir) if is_image_file(x)]
         self.patch_size = patch_size
         self.upscale_factor = upscale_factor

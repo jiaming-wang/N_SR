@@ -1,15 +1,11 @@
 clear;close all;
-
-folder = '../../dataset/hr';
-
-savepath = 'train.h5';
+%% settings
+folder = '../../dataset/valid';
+savepath = 'test.h5';
 size_input = 41;
 size_label = 41;
-stride = 14;
-
-%% scale factors
+stride = 41;
 scale = 4;
-
 %% initialization
 data = zeros(size_input, size_input, 3, 1);
 label = zeros(size_label, size_label, 3, 1);
@@ -55,7 +51,7 @@ data = data(:, :, :, order);
 label = label(:, :, :, order);
 
 %% writing to HDF5
-chunksz = 64;
+chunksz = 2;
 created_flag = false;
 totalct = 0;
 

@@ -14,12 +14,13 @@ There are some implements of SR methods with Pytorch.  <br>
 * Train: `python main.py`. More details in `option.py`</br>
 * Test: `python eval.py`.
 
-## Experiments
-
+## Experiments on FEI face dateset
+Image-based algoritnms.
 <table>
 	<tr>
 		<td><center> </center></td>
 		<td><center>Bicubic</center></td>
+		<td><center>EDSR_original</center></td>
 		<td><center>EDSR+b16k64</center></td>
 		<td><center>EDSR+b32k256</center></td>
 		<td><center>RDN</center></td>
@@ -31,6 +32,9 @@ There are some implements of SR methods with Pytorch.  <br>
 		</td>
 		<td>
 			<center>36.38</center>
+		</td>
+		<td>
+			<center>39.81</center>
 		</td>
 		<td>
 			<center>39.85</center>
@@ -46,8 +50,26 @@ There are some implements of SR methods with Pytorch.  <br>
 		</td>
 	</tr>
 </table>
-
+Patch-based algoritnms.
+<table>
+	<tr>
+		<td><center> </center></td>
+		<td><center>Bicubic</center></td>
+		<td><center>VDSR_original</center></td>
+	</tr>
+	<tr>
+		<td>
+			<center>PSNR</center>
+		</td>
+		<td>
+			<center>36.38</center>
+		</td>
+		<td>
+			<center>39.54</center>
+		</td>
+	</tr>
+</table>
 `tensorboard --logdir log`</br>
 
 The train/test loss and PSNR curves for each experiment are shown below:</br>
-<p align="center"><img src="log.png" align="center" width=300 height=500/></p>
+<p align="center"><img src="./log.png" align="center" width=300 height=500/></p>

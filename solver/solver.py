@@ -9,7 +9,7 @@
 import os
 import torch
 from solver.basesolver import BaseSolver
-from utils.utils import maek_optimizer, make_loss, calculate_psnr, calculate_ssim, save_config
+from utils.utils import maek_optimizer, make_loss, calculate_psnr, calculate_ssim, save_config, save_net_config
 import torch.backends.cudnn as cudnn
 from tqdm import tqdm
 import numpy as np
@@ -50,11 +50,11 @@ class Solver(BaseSolver):
             scale_factor=self.cfg,
             args = self.cfg
         )
-    
+        save_net_config(self.timestamp, self.model)
         self.optimizer = maek_optimizer(self.cfg['schedule']['optimizer'], cfg, self.model.parameters())
         self.loss = make_loss(self.cfg['schedule']['loss'])
 
-        save_config('Model parameters: '+ str(sum(param.numel() for param in self.model.parameters())))
+        save_config(self.timestamp, 'Model parameters: '+ str(sum(param.numel() for param in self.model.parameters())))
 
     def train(self): 
         with tqdm(total=len(self.train_loader), miniters=1,
@@ -81,7 +81,7 @@ class Solver(BaseSolver):
                 self.optimizer.step()
                 
             self.records['Loss'].append(epoch_loss / len(self.train_loader))
-            save_config('Initial Training Epoch {}: Loss={:.4f}'.format(self.epoch, self.records['Loss'][-1]))
+            save_config(self.timestamp, 'Initial Training Epoch {}: Loss={:.4f}'.format(self.epoch, self.records['Loss'][-1]))
             self.writer.add_scalar('Loss_epoch', self.records['Loss'][-1], self.epoch)
 
     def eval(self):
@@ -122,7 +122,7 @@ class Solver(BaseSolver):
             self.records['PSNR'].append(np.array(psnr_list).mean())
             self.records['SSIM'].append(np.array(ssim_list).mean())
 
-            save_config('Val Epoch {}: PSNR={:.4f}, SSIM={:.4f}'.format(self.epoch, self.records['PSNR'][-1],
+            save_config(self.timestamp, 'Val Epoch {}: PSNR={:.4f}, SSIM={:.4f}'.format(self.epoch, self.records['PSNR'][-1],
                                                                     self.records['SSIM'][-1]))
             self.writer.add_scalar('PSNR_epoch', self.records['PSNR'][-1], self.epoch)
             self.writer.add_scalar('SSIM_epoch', self.records['SSIM'][-1], self.epoch)

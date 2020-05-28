@@ -19,7 +19,7 @@ class Net(nn.Module):
         self.args = args
         base_filter = 64
         #The input layer
-        self.feat0 = ConvBlock(num_channels, base_filter, 9, 1, 4, activation='prelu', norm='batch')
+        self.feat0 = ConvBlock(num_channels, base_filter, 9, 1, 4, activation='prelu', norm=None)
 
         body = [
             ResnetBlock(base_filter, 3, 1, 1, activation='prelu', norm=None) for _ in range(16)

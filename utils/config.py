@@ -9,6 +9,7 @@
 
 import re 
 import yaml
+import os
 
 def get_config(cfg_path):
     loader = yaml.SafeLoader
@@ -28,6 +29,9 @@ def get_config(cfg_path):
     return cfg
 
 def save_cong(info, cfg_path):
+    # if not os.path.exists(cfg_path):
+    #     path_str = str(cfg_path)
+    #     os.mkdir(os.path.join(cfg_path.split('/')[0], cfg_path.split('/')[1]))
     with open(cfg_path, 'w') as f:
         yaml.dump(info, f, Dumper=yaml.SafeDumper)
 

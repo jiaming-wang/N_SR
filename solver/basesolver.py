@@ -22,7 +22,10 @@ class BaseSolver:
         self.nEpochs = cfg['nEpochs']
         self.checkpoint_dir = cfg['checkpoint']
         self.epoch = 1
-        self.writer = SummaryWriter('log')
+        
+        # print(time.time())
+        self.timestamp = int(time.time())
+        self.writer = SummaryWriter('log/' + str(self.timestamp))
         if cfg['gpu_mode']:
             self.num_workers = cfg['threads']
         else:
@@ -40,10 +43,10 @@ class BaseSolver:
         if not os.path.exists(self.checkpoint_dir):
             os.makedirs(self.checkpoint_dir)
 
-        save_cong(cfg, os.path.join('log', 'config.yml'))
+        save_cong(cfg, os.path.join('log/' + str(self.timestamp), 'config.yml'))
 
-        save_config('Train dataset has {} images and {} batches.'.format(len(train_dataset), len(self.train_loader)))
-        save_config('Val dataset has {} images and {} batches.'.format(len(val_dataset), len(self.val_loader)))
+        save_config(self.timestamp, 'Train dataset has {} images and {} batches.'.format(len(train_dataset), len(self.train_loader)))
+        save_config(self.timestamp, 'Val dataset has {} images and {} batches.'.format(len(val_dataset), len(self.val_loader)))
 
     # def save_records(self):
         # with open(os.path.join('log', 'records.txt'), 'wt') as f:

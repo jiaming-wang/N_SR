@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-06-02 21:02:40
-@LastEditTime: 2020-06-02 21:36:47
+@LastEditTime: 2020-06-02 21:52:00
 @Description: batch_size=16, patch_size=48, L1 loss, epoch=1000, lr=1e-4, decay=200
 '''
 import os
@@ -35,14 +35,14 @@ class CALayer(nn.Module):
 ## Residual Channel Attention Block (RCAB)
 class RCAB(nn.Module):
     def __init__(
-        self, conv, n_feat, kernel_size, reduction,
+        self, n_feat, kernel_size, reduction,
         bias=True, bn=False, act=nn.ReLU(True), res_scale=1):
 
         super(RCAB, self).__init__()
         modules_body = []
         for i in range(2):
-            modules_body.append(conv(n_feat, n_feat, kernel_size, bias=bias))
-            if bn: modules_body.append(nn.BatchNorm2d(n_feat))
+            modules_body.append(ConvBlock(n_feat, n_feat, kernel_size, 3, 1, 1, activation=None, norm=None))
+            # if bn: modules_body.append(nn.BatchNorm2d(n_feat))
             if i == 0: modules_body.append(act)
         modules_body.append(CALayer(n_feat, reduction))
         self.body = nn.Sequential(*modules_body)
@@ -56,14 +56,14 @@ class RCAB(nn.Module):
 
 ## Residual Group (RG)
 class ResidualGroup(nn.Module):
-    def __init__(self, conv, n_feat, kernel_size, reduction, act, res_scale, n_resblocks):
+    def __init__(self, n_feat, kernel_size, reduction, act, res_scale, n_resblocks):
         super(ResidualGroup, self).__init__()
         modules_body = []
         modules_body = [
             RCAB(
-                conv, n_feat, kernel_size, reduction, bias=True, bn=False, act=nn.ReLU(True), res_scale=1) \
+                n_feat, kernel_size, reduction, bias=True, bn=False, act=nn.ReLU(True), res_scale=1) \
             for _ in range(n_resblocks)]
-        modules_body.append(conv(n_feat, n_feat, kernel_size))
+        modules_body.append(ConvBlock(n_feat, n_feat, kernel_size, 3, 1, 1, activation=None, norm=None))
         self.body = nn.Sequential(*modules_body)
 
     def forward(self, x):
@@ -87,8 +87,7 @@ class Net(nn.Module):
         self.head = ConvBlock(num_channels, base_filter, 3, 1, 1, activation='relu', norm=None)
 
         body = [
-            ResidualGroup(
-                ConvBlock, base_filter, 3, reduction, act=nn.ReLU(True), res_scale=args.res_scale, n_resblocks=n_resblocks) \
+            ResidualGroup(base_filter, 3, reduction, act=nn.ReLU(True), res_scale=scale_factor, n_resblocks=n_resblocks) \
             for _ in range(n_resgroups)]
         
         body.append(ConvBlock(base_filter, base_filter, 3, 1, 1, activation='relu', norm=None))

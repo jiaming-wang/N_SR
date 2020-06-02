@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-@LastEditTime: 2020-06-02 21:14:36
+@LastEditTime: 2020-06-02 21:44:46
 @Description: file content
 '''
 import os
@@ -49,7 +49,7 @@ class Solver(BaseSolver):
             num_channels=self.cfg['data']['n_colors'], 
             base_filter=64,  
             num_stages= 0, 
-            scale_factor=self.cfg,
+            scale_factor=self.cfg['data']['upsacle'], 
             args = self.cfg
         )
         save_net_config(self.timestamp, self.model)

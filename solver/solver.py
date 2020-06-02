@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-@LastEditTime: 2020-02-18 15:53:20
+@LastEditTime: 2020-06-02 21:14:36
 @Description: file content
 '''
 import os
@@ -30,6 +30,8 @@ class Solver(BaseSolver):
             from model.dbpn import Net as net
         elif self.cfg['algorithm'] == 'SRResNet':
             from model.resnet import Net as net
+        elif self.cfg['algorithm'] == 'RCAN':
+            from model.rcan import Net as net
         elif self.cfg['algorithm'] == 'VDSR':
             from model.vdsr import Net as net
             

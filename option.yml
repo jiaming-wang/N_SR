@@ -6,8 +6,8 @@
 # 
 
 name: Net
-algorithm: SRResNet #[EDSR, RDN, DBPN, SRResNet, VDSR]
-nEpochs: 8000
+algorithm: RCAN #[RCAN, EDSR, RDN, DBPN, SRResNet, VDSR]
+nEpochs: 1000
 gpu_mode: True
 gpus: [0,1]
 threads: 8
@@ -19,7 +19,7 @@ train_dataset: hr
 valid_dataset: valid
 
 test:
-  algorithm: SRResNet #[EDSR, RDN, DBPN, SRResNet, VDSR]
+  algorithm: RCAN #[RCAN, EDSR, RDN, DBPN, SRResNet, VDSR]
   type: test #[test, eval]
   data_dir: ./dataset
   test_dataset: valid
@@ -33,7 +33,7 @@ pretrain:
 data:
   upsacle:  4
   batch_size: 16
-  patch_size: 24
+  patch_size: 48
   data_augmentation: False                                                                                                                                                                                               
   n_colors: 3
   rgb_range: 255
@@ -41,7 +41,7 @@ data:
 
 schedule:
   lr: 1e-4
-  decay: 1000
+  decay: 2000
   gamma: 0.1
   optimizer: ADAM #[ADAM, SGD, RMSprop]
   momentum: 0.9 #SGD momentum

@@ -25,6 +25,7 @@ Image-based algoritnms.
 		<td><center>EDSR+b32k256</center></td>
 		<td><center>RDN</center></td>
 		<td><center>DBPN</center></td>
+		<td><center>RCAN</center></td>
 	</tr>
 	<tr>
 		<td>
@@ -47,6 +48,9 @@ Image-based algoritnms.
 		</td>
 		<td>
 			<center>40.14</center>
+		</td>
+		<td>
+			<center>39.77</center>
 		</td>
 	</tr>
 </table>

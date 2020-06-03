@@ -24,8 +24,10 @@ class Testsolver(BaseSolver):
             from model.dbpn import Net as net
         elif self.cfg['test']['algorithm'] == 'SRResNet':
             from model.resnet import Net as net
-        else:
-            from model.rdn import Net as net
+        elif self.cfg['algorithm'] == 'RCAN':
+            from model.rcan import Net as net
+        elif self.cfg['algorithm'] == 'VDSR':
+            from model.vdsr import Net as net
 
         self.model = net(
                 num_channels=self.cfg['data']['n_colors'], 
@@ -73,8 +75,8 @@ class Testsolver(BaseSolver):
 
             t1 = time.time()
             print("===> Processing: %s || Timer: %.4f sec." % (name[0], (t1 - t0)))
-            self.save_img(bicubic.cpu().data, name[0][0:-4]+'_Bic.png')
-            self.save_img(target.cpu().data, name[0][0:-4]+'_GT.png')
+            self.save_img(bicubic.cpu().data, name[0][0:-4]+'_bic.png')
+            self.save_img(target.cpu().data, name[0][0:-4]+'_gt.png')
             self.save_img(prediction.cpu().data, name[0][0:-4]+'.png')
     
     def eval(self):
@@ -97,7 +99,7 @@ class Testsolver(BaseSolver):
     def save_img(self, img, img_name):
         save_img = img.squeeze().clamp(0, 1).numpy().transpose(1,2,0)
         # save img
-        save_dir=os.path.join('Results/',self.cfg['test']['type'])
+        save_dir=os.path.join('results/',self.cfg['test']['type'])
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
         

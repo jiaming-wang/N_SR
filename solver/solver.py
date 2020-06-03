@@ -162,12 +162,13 @@ class Solver(BaseSolver):
         super(Solver, self).save_checkpoint()
         self.ckp['net'] = self.model.state_dict()
         self.ckp['optimizer'] = self.optimizer.state_dict()
-
-        torch.save(self.ckp, os.path.join(self.cfg['checkpoint'], 'latest.pth'))
+        if not os.path.exists(self.cfg['checkpoint'] + '/' + str(self.timestamp)):
+            os.mkdir(self.cfg['checkpoint'] + '/' + str(self.timestamp))
+        torch.save(self.ckp, os.path.join(self.cfg['checkpoint'] + '/' + str(self.timestamp), 'latest.pth'))
 
         if self.records['PSNR'] != [] and self.records['PSNR'][-1] == np.array(self.records['PSNR']).max():
-            shutil.copy(os.path.join(self.cfg['checkpoint'], 'latest.pth'),
-                        os.path.join(self.cfg['checkpoint'], 'best.pth'))
+            shutil.copy(os.path.join(self.cfg['checkpoint'] + '/' + str(self.timestamp), 'latest.pth'),
+                        os.path.join(self.cfg['checkpoint'] + '/' + str(self.timestamp), 'best.pth'))
 
     def run(self):
         self.check_gpu()

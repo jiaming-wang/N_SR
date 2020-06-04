@@ -51,7 +51,7 @@ Image-based algoritnms.
 			<center>40.14</center>
 		</td>
 		<td>
-			<center>39.77</center>
+			<center>40.03</center>
 		</td>
 	</tr>
 </table>

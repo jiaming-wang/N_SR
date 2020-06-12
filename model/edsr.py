@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-22 09:46:46
-@LastEditTime: 2020-06-02 21:32:41
+@LastEditTime: 2020-06-05 11:35:19
 @Description: batch_size=16, patch_size=48, L1 loss, epoch=300
 '''
 import os
@@ -14,7 +14,7 @@ from model.base_net import ConvBlock, ResnetBlock_scale, Upsampler, MeanShift
 from torchvision.transforms import *
 
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, num_stages, scale_factor, args):
+    def __init__(self, num_channels, base_filter, scale_factor, args):
         super(Net, self).__init__()
 
         base_filter = 256
@@ -29,7 +29,7 @@ class Net(nn.Module):
 
         body.append(ConvBlock(base_filter, base_filter, 3, 1, 1, activation='relu', norm=None))
 
-        self.up = Upsampler(4, base_filter, activation=None)
+        self.up = Upsampler(scale_factor, base_filter, activation=None)
         self.output_conv = ConvBlock(base_filter, num_channels, 3, 1, 1, activation='relu', norm=None)
         self.body = nn.Sequential(*body)
 
@@ -59,8 +59,3 @@ class Net(nn.Module):
 
         return x    
 
-# if __name__ == '__main__':
-#     net = Net(3, 64, 256, 4, args=None)
-#     x = torch.randn(1, 3, 16, 16)
-#     output = net(x)
-#     print('Model parameters: '+ str(sum(param.numel() for param in net.params)))

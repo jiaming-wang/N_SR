@@ -18,22 +18,18 @@ from importlib import import_module
 from torch.autograd import Variable
 from data.data import DatasetFromHdf5
 from torch.utils.data import DataLoader
+import importlib
 
 class Solver(BaseSolver):
     def __init__(self, cfg):
         super(Solver, self).__init__(cfg)
         self.init_epoch = self.cfg['schedule']
         
-        if self.cfg['algorithm'] == 'EDSR':
-            from model.edsr import Net as net
-        elif self.cfg['algorithm'] == 'DBPN':
-            from model.dbpn import Net as net
-        elif self.cfg['algorithm'] == 'SRResNet':
-            from model.resnet import Net as net
-        elif self.cfg['algorithm'] == 'RCAN':
-            from model.rcan import Net as net
-        elif self.cfg['algorithm'] == 'VDSR':
-            from model.vdsr import Net as net
+        net_name = self.cfg['algorithm'].lower()
+        lib = importlib.import_module('model.' + net_name)
+        net = lib.Net
+
+        if self.cfg['algorithm'] == 'VDSR':
             
             train_dataset = DatasetFromHdf5("data/train.h5")
             self.train_loader = DataLoader(train_dataset, cfg['data']['batch_size'], shuffle=True,
@@ -41,14 +37,10 @@ class Solver(BaseSolver):
             val_dataset = DatasetFromHdf5("data/train.h5")
             self.val_loader = DataLoader(val_dataset, 1, shuffle=False,
                 num_workers=1)
-                
-        else:
-            from model.rdn import Net as net
 
         self.model = net(
             num_channels=self.cfg['data']['n_colors'], 
             base_filter=64,  
-            num_stages= 0, 
             scale_factor=self.cfg['data']['upsacle'], 
             args = self.cfg
         )
@@ -74,6 +66,7 @@ class Solver(BaseSolver):
                 self.model.train()
 
                 sr = self.model(lr)
+                
                 loss = self.loss(sr, hr)
                 epoch_loss += loss.data
                 t.set_postfix_str("Batch loss {:.4f}".format(loss.item()))
@@ -144,11 +137,12 @@ class Solver(BaseSolver):
                 gid = int(str_id)
                 if gid >=0:
                     self.gpu_ids.append(gid)
+
             torch.cuda.set_device(self.gpu_ids[0]) 
             self.loss = self.loss.cuda(self.gpu_ids[0])
 
             self.model = self.model.cuda(self.gpu_ids[0])
-            self.model = torch.nn.DataParallel(self.model, device_ids=self.gpu_ids)
+            self.model = torch.nn.DataParallel(self.model, device_ids=self.gpu_ids) 
 
     def check_pretrained(self):
         checkpoint = os.path.join(self.cfg['pretrain']['pre_folder'], self.cfg['pretrain']['pre_sr'])

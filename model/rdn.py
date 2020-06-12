@@ -32,7 +32,7 @@ class RDB(nn.Module):
         return x
 
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, num_stages, scale_factor, args):
+    def __init__(self, num_channels, base_filter, scale_factor, args):
     # channels, denselayer, growthrate):
         super(Net, self).__init__()
         '''
@@ -88,10 +88,40 @@ class Net(nn.Module):
         
         return x
 
+class DenseBlock_rdn(torch.nn.Module):
+    def __init__(self, in_filter, out_filter, kernel_size=3, stride=1, padding=1, bias=True, activation='prelu', norm='batch'):
+        super(DenseBlock_rdn, self).__init__()
 
-# if __name__ == '__main__':
-#     net = Net(3, 64, 256, 4, args=None)
-#     x = torch.randn(1, 3, 16, 16)
-#     output = net(x)
-#     print('Model parameters: '+ str(sum(param.numel() for param in net.params)))
+        self.conv = torch.nn.Conv2d(in_filter, out_filter, kernel_size, stride, padding, bias=bias)
 
+        self.norm = norm
+
+        if self.norm =='batch':
+            self.bn = torch.nn.BatchNorm1d(output_size)
+        elif self.norm == 'instance':
+            self.bn = torch.nn.InstanceNorm1d(output_size)
+
+        self.activation = activation
+        if self.activation == 'relu':
+            self.act = torch.nn.ReLU(True)
+        elif self.activation == 'prelu':
+            self.act = torch.nn.PReLU()
+        elif self.activation == 'lrelu':
+            self.act = torch.nn.LeakyReLU(0.2, True)
+        elif self.activation == 'tanh':
+            self.act = torch.nn.Tanh()
+        elif self.activation == 'sigmoid':
+            self.act = torch.nn.Sigmoid()
+
+    def forward(self, x):
+        if self.norm is not None:
+            out = self.bn(self.conv(x))
+        else:
+            out = self.conv(x)
+
+        if self.activation is not None:
+            out = self.act(out)
+        else:
+            out = out
+        out = torch.cat((x, out), 1)
+        return out

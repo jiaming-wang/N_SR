@@ -18,16 +18,9 @@ class Testsolver(BaseSolver):
     def __init__(self, cfg):
         super(Testsolver, self).__init__(cfg)
         
-        if self.cfg['test']['algorithm'] == 'EDSR':
-            from model.edsr import Net as net
-        elif self.cfg['test']['algorithm'] == 'DBPN':
-            from model.dbpn import Net as net
-        elif self.cfg['test']['algorithm'] == 'SRResNet':
-            from model.resnet import Net as net
-        elif self.cfg['algorithm'] == 'RCAN':
-            from model.rcan import Net as net
-        elif self.cfg['algorithm'] == 'VDSR':
-            from model.vdsr import Net as net
+        net_name = self.cfg['algorithm'].lower()
+        lib = importlib.import_module('model.' + net_name)
+        net = lib.Net
 
         self.model = net(
                 num_channels=self.cfg['data']['n_colors'], 

@@ -71,7 +71,7 @@ class ResidualGroup(nn.Module):
         return res
 
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, num_stages, scale_factor, args):
+    def __init__(self, num_channels, base_filter, scale_factor, args):
         super(Net, self).__init__()
         
         # RGB mean for DIV2K
@@ -79,7 +79,7 @@ class Net(nn.Module):
         # rgb_std = (1.0, 1.0, 1.0)
         self.sub_mean = MeanShift(args['data']['rgb_range'])
         self.add_mean = MeanShift(args['data']['rgb_range'], sign=1)
-        
+        base_filter = 64
         n_resgroups = 10
         n_resblocks = 20
         reduction = 16 #number of feature maps reduction
@@ -91,7 +91,7 @@ class Net(nn.Module):
         
         body.append(ConvBlock(base_filter, base_filter, 3, 1, 1, activation='relu', norm=None))
 
-        self.up = Upsampler(4, base_filter, activation=None)
+        self.up = Upsampler(scale_factor, base_filter, activation=None)
         self.output_conv = ConvBlock(base_filter, num_channels, 3, 1, 1, activation='relu', norm=None)
 
         self.body = nn.Sequential(*body)

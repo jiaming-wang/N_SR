@@ -15,7 +15,7 @@ from model.base_net import ConvBlock, ResnetBlock_scale, Upsampler, MeanShift
 from torchvision.transforms import *
 
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, num_stages, scale_factor, args):
+    def __init__(self, num_channels, base_filter, scale_factor, args):
         super(Net, self).__init__()
 
         base_filter = 64

@@ -14,7 +14,7 @@ from torchvision.transforms import *
 from model.base_net import *
 
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, num_stages, scale_factor, args):
+    def __init__(self, num_channels, base_filter, scale_factor, args):
         super(Net, self).__init__()
         self.args = args
         base_filter = 64
@@ -28,7 +28,7 @@ class Net(nn.Module):
 
         self.res_b1 = ConvBlock(base_filter, base_filter, 3, 1, 1, norm=None)
 
-        self.up = Upsampler(4, base_filter, activation='prelu') 
+        self.up = Upsampler(scale_factor, base_filter, activation='prelu') 
         #Reconstruction
         self.output_conv = ConvBlock(base_filter, num_channels, 9, 1, 4, activation=None, norm=None)
 

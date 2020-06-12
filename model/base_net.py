@@ -30,7 +30,7 @@ class Upsampler(torch.nn.Module):
         if self.activation == 'relu':
             self.act = torch.nn.ReLU(True)
         elif self.activation == 'prelu':
-            self.act = torch.nn.PReLU()
+            self.act = torch.nn.PReLU(init=0.5)
         elif self.activation == 'lrelu':
             self.act = torch.nn.LeakyReLU(0.2, True)
         elif self.activation == 'tanh':
@@ -71,7 +71,7 @@ class ConvBlock(torch.nn.Module):
         if self.activation == 'relu':
             self.act = torch.nn.ReLU(True)
         elif self.activation == 'prelu':
-            self.act = torch.nn.PReLU()
+            self.act = torch.nn.PReLU(init=0.5)
         elif self.activation == 'lrelu':
             self.act = torch.nn.LeakyReLU(0.2, True)
         elif self.activation == 'tanh':
@@ -112,7 +112,7 @@ class ResnetBlock_scale(torch.nn.Module):
         if self.activation == 'relu':
             self.act = torch.nn.ReLU(True)
         elif self.activation == 'prelu':
-            self.act = torch.nn.PReLU()
+            self.act = torch.nn.PReLU(init=0.5)
         elif self.activation == 'lrelu':
             self.act = torch.nn.LeakyReLU(0.2, True)
         elif self.activation == 'tanh':
@@ -158,7 +158,7 @@ class ResnetBlock(torch.nn.Module):
         if self.activation == 'relu':
             self.act = torch.nn.ReLU(True)
         elif self.activation == 'prelu':
-            self.act = torch.nn.PReLU()
+            self.act = torch.nn.PReLU(init=0.5)
         elif self.activation == 'lrelu':
             self.act = torch.nn.LeakyReLU(0.2, True)
         elif self.activation == 'tanh':

@@ -28,7 +28,7 @@ def get_config(cfg_path):
         cfg = yaml.load(f, Loader=loader)
     return cfg
 
-def save_cong(info, cfg_path):
+def save_yml(info, cfg_path):
     # if not os.path.exists(cfg_path):
     #     path_str = str(cfg_path)
     #     os.mkdir(os.path.join(cfg_path.split('/')[0], cfg_path.split('/')[1]))

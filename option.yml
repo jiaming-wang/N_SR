@@ -6,9 +6,9 @@
 # 
 
 name: Net
-algorithm: DRN #[RCAN, EDSR, RDN, DBPN, SRResNet, VDSR]
-nEpochs: 1000
-gpu_mode: False
+algorithm: SRResNet #[RCAN, EDSR, RDN, DBPN, SRResNet, VDSR]
+nEpochs: 8000
+gpu_mode: True
 gpus: [0, 1]
 threads: 8
 
@@ -19,11 +19,11 @@ train_dataset: hr
 valid_dataset: valid
 
 test:
-  algorithm: DRN #[RCAN, EDSR, RDN, DBPN, SRResNet, VDSR]
+  algorithm: SRResNet #[RCAN, EDSR, RDN, DBPN, SRResNet, VDSR]
   type: test #[test, eval]
   data_dir: ./dataset
   test_dataset: valid
-  model: best.pth
+  model: 1591970881/best.pth
 
 pretrain:
   pretrained: False
@@ -41,7 +41,7 @@ data:
 
 schedule:
   lr: 1e-4
-  decay: 2000
+  decay: 4000
   gamma: 0.1
   optimizer: ADAM #[ADAM, SGD, RMSprop]
   momentum: 0.9 #SGD momentum
@@ -51,5 +51,5 @@ schedule:
   alpha: 0.9 #RMSprop alpha
   weight_dency: 0
   gclip: 0
-  loss: L1 #[MSE, L1, VGG22, VGG54]
+  loss: MSE #[MSE, L1, VGG22, VGG54]
 

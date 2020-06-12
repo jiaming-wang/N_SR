@@ -13,6 +13,7 @@ from data.data import *
 from torch.utils.data import DataLoader
 import time, cv2
 from torch.autograd import Variable
+import importlib
 
 class Testsolver(BaseSolver):
     def __init__(self, cfg):
@@ -21,12 +22,11 @@ class Testsolver(BaseSolver):
         net_name = self.cfg['algorithm'].lower()
         lib = importlib.import_module('model.' + net_name)
         net = lib.Net
-
+        
         self.model = net(
                 num_channels=self.cfg['data']['n_colors'], 
                 base_filter=64,  
-                num_stages= 0, 
-                scale_factor=self.cfg,
+                scale_factor=self.cfg['data']['upsacle'], 
                 args = self.cfg
         )
 

@@ -24,7 +24,7 @@ class Solver(BaseSolver):
     def __init__(self, cfg):
         super(Solver, self).__init__(cfg)
         self.init_epoch = self.cfg['schedule']
-        
+
         net_name = self.cfg['algorithm'].lower()
         lib = importlib.import_module('model.' + net_name)
         net = lib.Net
@@ -48,6 +48,8 @@ class Solver(BaseSolver):
         self.optimizer = maek_optimizer(self.cfg['schedule']['optimizer'], cfg, self.model.parameters())
         self.loss = make_loss(self.cfg['schedule']['loss'])
 
+        save_config(self.timestamp, 'Train dataset has {} images and {} batches.'.format(len(self.train_dataset), len(self.train_loader)))
+        save_config(self.timestamp, 'Val dataset has {} images and {} batches.'.format(len(self.val_dataset), len(self.val_loader)))
         save_config(self.timestamp, 'Model parameters: '+ str(sum(param.numel() for param in self.model.parameters())))
 
     def train(self): 

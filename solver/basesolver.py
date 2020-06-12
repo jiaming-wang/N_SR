@@ -10,7 +10,7 @@ import os
 import time
 from utils.utils import  draw_curve_and_save, save_config
 import torch
-from utils.config import save_cong
+from utils.config import save_yml
 from data.dataset import data
 from data.data import get_data
 from torch.utils.data import DataLoader
@@ -22,20 +22,21 @@ class BaseSolver:
         self.nEpochs = cfg['nEpochs']
         self.checkpoint_dir = cfg['checkpoint']
         self.epoch = 1
-        
+
         # print(time.time())
         self.timestamp = int(time.time())
         self.writer = SummaryWriter('log/' + str(self.timestamp))
+
         if cfg['gpu_mode']:
             self.num_workers = cfg['threads']
         else:
             self.num_workers = 0
 
-        train_dataset = get_data(cfg, cfg['train_dataset'], cfg['data']['upsacle'])
-        self.train_loader = DataLoader(train_dataset, cfg['data']['batch_size'], shuffle=True,
+        self.train_dataset = get_data(cfg, cfg['train_dataset'], cfg['data']['upsacle'])
+        self.train_loader = DataLoader(self.train_dataset, cfg['data']['batch_size'], shuffle=True,
             num_workers=self.num_workers)
-        val_dataset = get_data(cfg, cfg['valid_dataset'], cfg['data']['upsacle'])
-        self.val_loader = DataLoader(val_dataset, 1, shuffle=False,
+        self.val_dataset = get_data(cfg, cfg['valid_dataset'], cfg['data']['upsacle'])
+        self.val_loader = DataLoader(self.val_dataset, 1, shuffle=False,
             num_workers=self.num_workers)
 
         self.records = {'Epoch': [], 'PSNR': [], 'SSIM': [], 'Loss': []}
@@ -43,10 +44,8 @@ class BaseSolver:
         if not os.path.exists(self.checkpoint_dir):
             os.makedirs(self.checkpoint_dir)
 
-        save_cong(cfg, os.path.join('log/' + str(self.timestamp), 'config.yml'))
+        save_yml(cfg, os.path.join('log/' + str(self.timestamp), 'config.yml'))
 
-        save_config(self.timestamp, 'Train dataset has {} images and {} batches.'.format(len(train_dataset), len(self.train_loader)))
-        save_config(self.timestamp, 'Val dataset has {} images and {} batches.'.format(len(val_dataset), len(self.val_loader)))
 
     # def save_records(self):
         # with open(os.path.join('log', 'records.txt'), 'wt') as f:

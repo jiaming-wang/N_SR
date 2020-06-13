@@ -13,6 +13,44 @@ import torch.optim as optim
 from model.base_net import ConvBlock, ResnetBlock_scale, Upsampler, MeanShift
 from torchvision.transforms import *
 
+class Net(nn.Module):
+    def __init__(self, num_channels, base_filter, scale_factor, args):
+        super(Net, self).__init__()
+        
+        # RGB mean for DIV2K
+        # rgb_mean = (0.4488, 0.4371, 0.4040)
+        # rgb_std = (1.0, 1.0, 1.0)
+        self.sub_mean = MeanShift(args['data']['rgb_range'])
+        self.add_mean = MeanShift(args['data']['rgb_range'], sign=1)
+        base_filter = 64
+        n_resgroups = 10
+        n_resblocks = 20
+        reduction = 16 #number of feature maps reduction
+        self.head = ConvBlock(num_channels, base_filter, 3, 1, 1, activation='relu', norm=None)
+
+        body = [
+            ResidualGroup(base_filter, 3, reduction, act=nn.ReLU(True), res_scale=scale_factor, n_resblocks=n_resblocks) \
+            for _ in range(n_resgroups)]
+        
+        body.append(ConvBlock(base_filter, base_filter, 3, 1, 1, activation='relu', norm=None))
+
+        self.up = Upsampler(scale_factor, base_filter, activation=None)
+        self.output_conv = ConvBlock(base_filter, num_channels, 3, 1, 1, activation='relu', norm=None)
+
+        self.body = nn.Sequential(*body)
+    
+    def forward(self, x):
+        
+        x = self.head(x)
+        
+        res = self.body(x)
+        res = res + x
+        
+        x = self.up(res)
+        x = self.output_conv(x)
+
+        return x
+
 ## Channel Attention (CA) Layer
 class CALayer(nn.Module):
     def __init__(self, channel, reduction=16):
@@ -69,41 +107,3 @@ class ResidualGroup(nn.Module):
         res = self.body(x)
         res = res + x
         return res
-
-class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, scale_factor, args):
-        super(Net, self).__init__()
-        
-        # RGB mean for DIV2K
-        # rgb_mean = (0.4488, 0.4371, 0.4040)
-        # rgb_std = (1.0, 1.0, 1.0)
-        self.sub_mean = MeanShift(args['data']['rgb_range'])
-        self.add_mean = MeanShift(args['data']['rgb_range'], sign=1)
-        base_filter = 64
-        n_resgroups = 10
-        n_resblocks = 20
-        reduction = 16 #number of feature maps reduction
-        self.head = ConvBlock(num_channels, base_filter, 3, 1, 1, activation='relu', norm=None)
-
-        body = [
-            ResidualGroup(base_filter, 3, reduction, act=nn.ReLU(True), res_scale=scale_factor, n_resblocks=n_resblocks) \
-            for _ in range(n_resgroups)]
-        
-        body.append(ConvBlock(base_filter, base_filter, 3, 1, 1, activation='relu', norm=None))
-
-        self.up = Upsampler(scale_factor, base_filter, activation=None)
-        self.output_conv = ConvBlock(base_filter, num_channels, 3, 1, 1, activation='relu', norm=None)
-
-        self.body = nn.Sequential(*body)
-    
-    def forward(self, x):
-        
-        x = self.head(x)
-        
-        res = self.body(x)
-        res = res + x
-        
-        x = self.up(res)
-        x = self.output_conv(x)
-
-        return x

@@ -18,6 +18,7 @@ from importlib import import_module
 from torch.autograd import Variable
 from data.data import DatasetFromHdf5
 from torch.utils.data import DataLoader
+import torch.nn.utils as utils
 import importlib
 
 class Solver(BaseSolver):
@@ -75,6 +76,11 @@ class Solver(BaseSolver):
                 t.update()
 
                 loss.backward()
+                if self.cfg['schedule']['gclip'] > 0:
+                    utils.clip_grad_value_(
+                        self.model.parameters(),
+                        self.cfg['schedule']['gclip']
+                    )
                 self.optimizer.step()
                 
             self.records['Loss'].append(epoch_loss / len(self.train_loader))

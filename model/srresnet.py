@@ -17,12 +17,14 @@ class Net(nn.Module):
     def __init__(self, num_channels, base_filter, scale_factor, args):
         super(Net, self).__init__()
         self.args = args
+
         base_filter = 64
+        n_resblocks = 16
         #The input layer
         self.feat0 = ConvBlock(num_channels, base_filter, 9, 1, 4, activation='prelu', norm=None)
 
         body = [
-            ResnetBlock(base_filter, 3, 1, 1, activation='prelu', norm=None) for _ in range(16)
+            ResnetBlock(base_filter, 3, 1, 1, activation='prelu', norm=None) for _ in range(n_resblocks)
         ]
         self.body = nn.Sequential(*body)
 

@@ -6,8 +6,8 @@
 # 
 
 name: Net
-algorithm: SRResNet #[RCAN, EDSR, RDN, DBPN, SRResNet, VDSR]
-nEpochs: 8000
+algorithm: CSNLN #[CSNLN, RCAN, EDSR, RDN, DBPN, SRResNet, VDSR]
+nEpochs: 1000
 gpu_mode: True
 gpus: [0, 1]
 threads: 8
@@ -19,7 +19,7 @@ train_dataset: hr
 valid_dataset: valid
 
 test:
-  algorithm: SRResNet #[RCAN, EDSR, RDN, DBPN, SRResNet, VDSR]
+  algorithm: CSNLN #[CSNLN, RCAN, EDSR, RDN, DBPN, SRResNet, VDSR]
   type: test #[test, eval]
   data_dir: ./dataset
   test_dataset: valid
@@ -41,7 +41,7 @@ data:
 
 schedule:
   lr: 1e-4
-  decay: 4000
+  decay: 500
   gamma: 0.1
   optimizer: ADAM #[ADAM, SGD, RMSprop]
   momentum: 0.9 #SGD momentum

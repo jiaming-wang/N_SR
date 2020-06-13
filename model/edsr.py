@@ -18,13 +18,15 @@ class Net(nn.Module):
         super(Net, self).__init__()
 
         base_filter = 256
+        n_resblocks = 32
+
         self.sub_mean = MeanShift(args['data']['rgb_range'])
         self.add_mean = MeanShift(args['data']['rgb_range'], sign=1)
 
         self.head = ConvBlock(num_channels, base_filter, 3, 1, 1, activation='relu', norm=None)
 
         body = [
-            ResnetBlock_scale(base_filter, 0.1, 3, 1, 1, activation='relu', norm=None) for _ in range(32)
+            ResnetBlock_scale(base_filter, 0.1, 3, 1, 1, activation='relu', norm=None) for _ in range(n_resblocks)
         ]
 
         body.append(ConvBlock(base_filter, base_filter, 3, 1, 1, activation='relu', norm=None))

@@ -5,6 +5,7 @@ There are some implements of SR methods with Pytorch.  <br>
 * DBPN in dbpn.py ([Deep Back-Projection Networks For Super-Resolution](https://arxiv.org/abs/1904.05677))
 * RDN in rdn.py ([Residual Dense Network for Image SR](https://arxiv.org/pdf/1802.08797v2.pdf))
 * EDSR in edsr.py ([Enhanced Deep Residual Networks for Single Image Super-Resolution](https://arxiv.org/abs/1707.02921))
+* SRResNet in srresnet.py ([Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network](https://arxiv.org/abs/1609.04802))
 
 ## Dependencies
 * Python 3.5.3
@@ -24,6 +25,7 @@ Image-based algoritnms.
 		<td><center>EDSR_original</center></td>
 		<td><center>EDSR+b16k64</center></td>
 		<td><center>EDSR+b32k256</center></td>
+		<td><center>SRResNet</center></td>
 		<td><center>RDN</center></td>
 		<td><center>DBPN</center></td>
 		<td><center>RCAN</center></td>
@@ -43,6 +45,9 @@ Image-based algoritnms.
 		</td>
 		<td>
 			<center>40.05</center>
+		</td>
+		<td>
+			<center>40.04</center>
 		</td>
 		<td>
 			<center>39.90</center>

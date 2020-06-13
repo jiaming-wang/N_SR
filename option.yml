@@ -23,7 +23,7 @@ test:
   type: test #[test, eval]
   data_dir: ./dataset
   test_dataset: valid
-  model: 1591970881/best.pth
+  model: 1591970881/latest.pth
 
 pretrain:
   pretrained: False

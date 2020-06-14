@@ -6,7 +6,7 @@
 # 
 
 name: Net
-algorithm: CSNLN #[CSNLN, RCAN, EDSR, RDN, DBPN, SRResNet, VDSR]
+algorithm: SAN #[SAN, RCAN, EDSR, RDN, DBPN, SRResNet, VDSR]
 nEpochs: 1000
 gpu_mode: True
 gpus: [0, 1]
@@ -19,11 +19,11 @@ train_dataset: hr
 valid_dataset: valid
 
 test:
-  algorithm: CSNLN #[CSNLN, RCAN, EDSR, RDN, DBPN, SRResNet, VDSR]
+  algorithm: SAN #[SAN, RCAN, EDSR, RDN, DBPN, SRResNet, VDSR]
   type: test #[test, eval]
   data_dir: ./dataset
   test_dataset: valid
-  model: 1591970881/latest.pth
+  model: 1592106129/best.pth
 
 pretrain:
   pretrained: False
@@ -32,8 +32,8 @@ pretrain:
 
 data:
   upsacle:  4
-  batch_size: 32
-  patch_size: 24
+  batch_size: 16
+  patch_size: 48
   data_augmentation: False                                                                                                                                                                                               
   n_colors: 3
   rgb_range: 255

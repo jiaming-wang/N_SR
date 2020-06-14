@@ -17,9 +17,9 @@ class Net(nn.Module):
     def __init__(self, num_channels, base_filter, scale_factor, args):
         super(Net, self).__init__()
 
-        base_filter = 128 #128
+        base_filter = 64 #128
         n_resblocks = 16 #16
-        self.depth = 3 #12
+        self.depth = 5 #12
 
         # RGB mean for DIV2K
         # rgb_mean = (0.4488, 0.4371, 0.4040)
@@ -172,12 +172,12 @@ class CrossScaleAttention(nn.Module):
         input_groups = torch.split(match_input,1,dim=0)
         # kernel size on input for matching 
         kernel = self.scale*self.ksize
-        
+
         # raw_w is extracted for reconstruction 
         raw_w = extract_image_patches(embed_w, ksizes=[kernel, kernel],
                                       strides=[self.stride*self.scale,self.stride*self.scale],
                                       rates=[1, 1],
-                                      padding='same') # [N, C*k*k, L]
+                                      padding='same') # [N, C*k*k, L] 
         # raw_shape: [N, C, k, k, L]
         raw_w = raw_w.view(shape_input[0], shape_input[1], kernel, kernel, -1)
         raw_w = raw_w.permute(0, 4, 1, 2, 3)    # raw_shape: [N, L, C, k, k]
@@ -223,12 +223,13 @@ class CrossScaleAttention(nn.Module):
                 yi = (yi == yi.max(dim=1,keepdim=True)[0]).float()
             
             # deconv for reconsturction
-            wi_center = raw_wi[0]           
+            wi_center = raw_wi[0]  
+     
             yi = F.conv_transpose2d(yi, wi_center, stride=self.stride*self.scale, padding=self.scale)
             
             yi =yi/6.
             y.append(yi)
-      
+            
         y = torch.cat(y, dim=0)
 
         return y
@@ -263,6 +264,7 @@ def extract_image_patches(images, ksizes, strides, rates, padding='same'):
                              padding=0,
                              stride=strides)
     patches = unfold(images)
+
     return patches  # [N, C*k*k, L], L is the total number of such blocks
 
 def same_padding(images, ksizes, strides, rates):

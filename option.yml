@@ -23,11 +23,11 @@ test:
   type: test #[test, eval]
   data_dir: ./dataset
   test_dataset: valid
-  model: 1592106129/best.pth
+  model: 1592134968/latest.pth
 
 pretrain:
   pretrained: False
-  pre_sr: Net_epoch_1.pth
+  pre_sr: 1592134968/best.pth
   pre_folder: checkpoint
 
 data:

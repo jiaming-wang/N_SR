@@ -29,12 +29,12 @@ class DatasetFromHdf5(data.Dataset):
     def __init__(self, file_path):
         super(DatasetFromHdf5, self).__init__()
         hf = h5py.File(file_path)
-        self.data = hf.get('data')
-        self.target = hf.get('label')
+        self.data = numpy.array(hf.get('data'))
+        self.target = numpy.array(hf.get('label'))
 
     def __getitem__(self, index):
-        self.data = self.data.transpose((2, 0, 1, 3))
-        self.target = self.target.transpose((2, 0, 1, 3))
+        self.data = numpy.transpose(self.data, (0, 2, 3, 1))
+        self.target = numpy.transpose(self.target, (0, 2, 3, 1))
         return torch.from_numpy(self.data[index,:,:,:]).float(), torch.from_numpy(self.target[index,:,:,:]).float()
         
     def __len__(self):

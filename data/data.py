@@ -12,6 +12,7 @@ from .dataset import Data, Data_test, Data_eval, Data_patch
 from torchvision import transforms
 import torch, h5py
 import torch.utils.data as data
+import numpy
 
 def transform():
     return Compose([
@@ -31,14 +32,16 @@ class DatasetFromHdf5(data.Dataset):
         hf = h5py.File(file_path)
         self.data = numpy.array(hf.get('data'))
         self.target = numpy.array(hf.get('label'))
+        self.data = numpy.transpose(self.data, (0, 3, 1, 2))
+        self.target = numpy.transpose(self.target, (0, 3, 1, 2))
 
     def __getitem__(self, index):
-        self.data = numpy.transpose(self.data, (0, 2, 3, 1))
-        self.target = numpy.transpose(self.target, (0, 2, 3, 1))
+        # self.data = numpy.transpose(self.data)
+        # self.target = numpy.transpose(self.target)
         return torch.from_numpy(self.data[index,:,:,:]).float(), torch.from_numpy(self.target[index,:,:,:]).float()
         
     def __len__(self):
-        print(self.data)
+        
         return self.data.shape[0]
     
 def get_test_data(cfg, data_dir, upscale_factor):

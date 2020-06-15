@@ -18,7 +18,7 @@ from importlib import import_module
 from torch.autograd import Variable
 from data.data import DatasetFromHdf5
 from torch.utils.data import DataLoader
-import torch.nn.utils as utils
+import torch.nn as nn
 import importlib
 
 class Solver(BaseSolver):
@@ -33,10 +33,10 @@ class Solver(BaseSolver):
         if self.cfg['algorithm'] == 'VDSR':
             
             train_dataset = DatasetFromHdf5("data/train.h5")
-            self.train_loader = DataLoader(train_dataset, cfg['data']['batch_size'], shuffle=True,
+            self.train_loader = DataLoader(train_dataset, cfg['data']['batch_size'], shuffle=False,
                 num_workers=1)
-            val_dataset = DatasetFromHdf5("data/train.h5")
-            self.val_loader = DataLoader(val_dataset, 1, shuffle=False,
+            val_dataset = DatasetFromHdf5("data/test.h5")
+            self.val_loader = DataLoader(val_dataset, cfg['data']['batch_size'], shuffle=False,
                 num_workers=1)
 
         self.model = net(
@@ -76,8 +76,9 @@ class Solver(BaseSolver):
                 t.update()
 
                 loss.backward()
+                # print("grad before clip:"+str(self.model.output_conv.conv.weight.grad))
                 if self.cfg['schedule']['gclip'] > 0:
-                    utils.clip_grad_value_(
+                    nn.utils.clip_grad_norm_(
                         self.model.parameters(),
                         self.cfg['schedule']['gclip']
                     )

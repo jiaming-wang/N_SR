@@ -63,6 +63,9 @@ class Testsolver(BaseSolver):
                 target = target.cuda(self.gpu_ids[0])
                 bicubic = bicubic.cuda(self.gpu_ids[0])
 
+            if self.cfg['algorithm'] == 'VDSR':
+                input = bicubic
+
             t0 = time.time()
             prediction = self.model(input)
 

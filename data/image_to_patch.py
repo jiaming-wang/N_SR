@@ -3,22 +3,29 @@
 '''
 @Author: wjm
 @Date: 2020-06-13 20:12:23
-@LastEditTime: 2020-06-13 21:19:24
+@LastEditTime: 2020-06-15 14:24:09
 @Description: file content
 '''
 import numpy as np 
 import glob
 import os
-import cv2
+# import cv2
+from scipy import misc
+import h5py
 
 class image_to_patch:
     
-    def __init__(self, patch_size, scale, image_patch):
+    def __init__(self, patch_size, scale, image_patch, output_filename):
 
-        self.hr_patch_size = patch_size * scale
+        self.hr_patch_size = patch_size
         self.lr_patch_size = patch_size
         self.scale = scale
         self.image_patch = image_patch
+        self.labels = []
+        self.inputs = []
+        self.batch_size = 64
+        self.stride = patch_size
+        self.output_filename = 'train.h5'
 
     def to_patch(self):
         
@@ -27,68 +34,62 @@ class image_to_patch:
         for i in range(len(data)):
 
             img = self.imread(data[i])
+        
+            img_lr = misc.imresize(img, 1 / self.scale, interp='bicubic')
+            img_bic = misc.imresize(img_lr, float(self.scale), interp='bicubic')
+            # misc.imsave('outfile.png', img_bic)
+            # print(img_bic.shape)
+            img = img.astype(np.float32) / 255
+            img_bic = np.clip(img_bic.astype(np.float32) / 255, 0.0, 1.0)
+
             if len(img.shape) == 3: # is color
                 h, w, c = img.shape
             else:
                 h, w = img.shape # is grayscale
-            nx, ny = 0, 0
 
-            image_path = data[i]
+            for x in range(0, h - self.hr_patch_size, self.stride):
+                for y in range(0, w - self.hr_patch_size, self.stride):
 
-            n = 1
-            for x in range(0, h - self.hr_patch_size, self.hr_patch_size):
-                nx += 1; ny = 0
-                for y in range(0, w - self.hr_patch_size, self.hr_patch_size):
-                    ny += 1
+                    sub_img_label = img[x: x + self.hr_patch_size, y: y + self.hr_patch_size]
+                    sub_img_input = img_bic[x: x + self.hr_patch_size, y: y + self.hr_patch_size]
 
-                    sub_img = img[x: x + self.hr_patch_size, y: y + self.hr_patch_size]
+                    self.labels.append(sub_img_label)
+                    self.inputs.append(sub_img_input)
+                    
+        self.labels = np.array(self.labels)
+        self.inputs = np.array(self.inputs)
+        self.shuffle()
+        self.write_hdf5(self.inputs, self.labels, self.output_filename)
 
-                    self.imsave(sub_img, image_path[:-4] + '_' + str(n) + '.png')
-                    n = n + 1
-
-            for x in range(0, h - self.hr_patch_size, self.hr_patch_size):
-                nx += 1; ny = 0
-                for y in range(w - self.hr_patch_size, w, self.hr_patch_size):
-                    ny += 1
-
-                    sub_img = img[x: x + self.hr_patch_size, y: y + self.hr_patch_size]
-
-                    self.imsave(sub_img, image_path[:-4] + '_' + str(n) + '.png')
-                    n = n + 1
-
-            for x in range(h - self.hr_patch_size, h, self.hr_patch_size):
-                nx += 1; ny = 0
-                for y in range(0, w - self.hr_patch_size, self.hr_patch_size):
-                    ny += 1
-
-                    sub_img = img[x: x + self.hr_patch_size, y: y + self.hr_patch_size]
-
-                    self.imsave(sub_img, image_path[:-4] + '_' + str(n) + '.png')
-                    n = n + 1
-            
-            for x in range(h - self.hr_patch_size, h, self.hr_patch_size):
-                nx += 1; ny = 0
-                for y in range(w - self.hr_patch_size, w, self.hr_patch_size):
-                    ny += 1
-
-                    sub_img = img[x: x + self.hr_patch_size, y: y + self.hr_patch_size]
-
-                    self.imsave(sub_img, image_path[:-4] + '_' + str(n) + '.png')
-                    n = n + 1
-
-    def imsave(self, image, path):
+    # def imsave(self, image, path):
  
-        if not os.path.isdir(os.path.join(os.getcwd())):
-            os.makedirs(os.path.join(os.getcwd()))
+    #     if not os.path.isdir(os.path.join(os.getcwd())):
+    #         os.makedirs(os.path.join(os.getcwd()))
 
-        cv2.imwrite(os.path.join(os.getcwd(),path),image)
+    #     cv2.imwrite(os.path.join(os.getcwd(),path),image)
 
     def imread(self, path):
-        img = cv2.imread(path)
+        img = misc.imread(path)
         return img
     
+    def shuffle(self):
+        index = list(range(len(self.labels)))
+        np.random.shuffle(index)
+        self.labels = self.labels[index]
+        self.inputs = self.inputs[index]
+
+    def write_hdf5(self, data, labels, output_filename):
+
+        x = data.astype(np.float32)
+        y = labels.astype(np.float32)
+
+        print(x.shape)
+        with h5py.File(output_filename, 'w') as h:
+            h.create_dataset('data', data=x, shape=x.shape)
+            h.create_dataset('label', data=y, shape=y.shape)
+
     def modcrop(self, img, scale =3):
-        # Check the image is grayscale
+
         if len(img.shape) ==3:
             h, w, _ = img.shape
             h = (h / scale) * scale
@@ -101,12 +102,16 @@ class image_to_patch:
             img = img[0:h, 0:w]
         return img
 
-def main():
-    pass
 
 if __name__ == '__main__':
-    csnln_path = 48
+    csnln_path = 41
     scale = 4
-    image_patch = r'/home/wjmecho/workdir/SR/N_SR-master/dataset/valid'
-    myclass = image_to_patch(csnln_path, scale, image_patch)
-    myclass.to_patch()
+    image_patch_train = r'/home/wjmecho/workdir/SR/N_SR-master/dataset/hr/'
+    output_filename_train = 'train.h5'
+    train = image_to_patch(csnln_path, scale, image_patch_train, output_filename_train)
+    train.to_patch()
+
+    image_patch_test = r'/home/wjmecho/workdir/SR/N_SR-master/dataset/valid/'
+    output_filename_test = 'test.h5'
+    test = image_to_patch(csnln_path, scale, image_patch_test, output_filename_test)
+    test.to_patch()

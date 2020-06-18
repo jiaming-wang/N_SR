@@ -27,28 +27,7 @@ Patch-based algoritnms.
 |Algorithms|Bicubic|SRCNN_original|VDSR_original|
 |:---:|:---:|:---:|:---:|
 |PSNR | 36.38 | 38.58 | 39.54 |
-<table>
-	<tr>
-		<td><center> </center></td>
-		<td><center>Bicubic</center></td>
-		<td><center>SRCNN_original</center></td>
-		<td><center>VDSR_original</center></td>
-	</tr>
-	<tr>
-		<td>
-			<center>PSNR</center>
-		</td>
-		<td>
-			<center>36.38</center>
-		</td>
-		<td>
-			<center>38.58</center>
-		</td>
-		<td>
-			<center>39.54</center>
-		</td>
-	</tr>
-</table>
+
 `tensorboard --logdir log`</br>
 
 The train/test loss and PSNR curves for each experiment are shown below:</br>

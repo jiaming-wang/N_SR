@@ -17,7 +17,7 @@ There are some implements of SR methods with Pytorch.  <br>
 * Train: `python main.py`. More details in `option.py`</br>
 * Test: `python eval.py`.
 
-## Experiments on FEI face dateset
+## Experiments on FEI face dateset (without augmentation)
 Image-based algoritnms.
 |Algorithms|Bicubic|EDSR_original|EDSR+b16k64|EDSR+b32k256|SRResNet|RDN|DBPN|RCAN|
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|

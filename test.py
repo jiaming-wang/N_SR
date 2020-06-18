@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-12 23:50:07
-@LastEditTime: 2020-02-18 14:00:21
+@LastEditTime: 2020-06-18 20:23:27
 @Description: test.py
 '''
 
@@ -14,3 +14,4 @@ if __name__ == '__main__':
     cfg = get_config('option.yml')
     solver = Testsolver(cfg)
     solver.run()
+    

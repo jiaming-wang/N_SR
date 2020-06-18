@@ -30,7 +30,7 @@ class Solver(BaseSolver):
         lib = importlib.import_module('model.' + net_name)
         net = lib.Net
 
-        if self.cfg['algorithm'] == 'VDSR':
+        if self.cfg['algorithm'] == 'VDSR' or self.cfg['algorithm'] == 'SRCNN':
             
             train_dataset = DatasetFromHdf5("data/train.h5")
             self.train_loader = DataLoader(train_dataset, cfg['data']['batch_size'], shuffle=False,

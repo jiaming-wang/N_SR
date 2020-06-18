@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-06-13 20:12:23
-@LastEditTime: 2020-06-15 14:24:09
+@LastEditTime: 2020-06-18 20:37:25
 @Description: file content
 '''
 import numpy as np 
@@ -25,7 +25,7 @@ class image_to_patch:
         self.inputs = []
         self.batch_size = 64
         self.stride = patch_size
-        self.output_filename = 'train.h5'
+        self.output_filename = output_filename
 
     def to_patch(self):
         

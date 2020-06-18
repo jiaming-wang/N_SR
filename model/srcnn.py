@@ -2,8 +2,8 @@
 # coding=utf-8
 '''
 @Author: wjm
-@Date: 2020-02-18 15:19:38
-@LastEditTime: 2020-06-18 21:39:31
+@Date: 2020-06-16 15:19:38
+@LastEditTime: 2020-06-16 19:44:06
 @Description: file content
 '''
 
@@ -20,35 +20,29 @@ class Net(nn.Module):
 
         base_filter = 64
         num_channels = 3
-        self.head = ConvBlock(num_channels, base_filter, 3, 1, 1, activation='relu', norm=None, bias = True)
+        self.head = ConvBlock(num_channels, base_filter, 9, 1, 4, activation='relu', norm=None, bias = True)
 
-        body = [
-            ConvBlock(base_filter, base_filter, 3, 1, 1, activation='relu', norm=None, bias = True) for _ in range(18)
-        ]
+        self.body = ConvBlock(base_filter, 32, 1, 1, 0, activation='relu', norm=None, bias = True)
 
-        self.output_conv = ConvBlock(base_filter, num_channels, 3, 1, 1, activation='relu', norm=None, bias = True)
-        self.body = nn.Sequential(*body)
+        self.output_conv = ConvBlock(32, num_channels, 5, 1, 2, activation='relu', norm=None, bias = True)
 
         for m in self.modules():
             classname = m.__class__.__name__
             if classname.find('Conv2d') != -1:
-        	    torch.nn.init.kaiming_normal_(m.weight)
-        	    # torch.nn.init.xavier_uniform_(m.weight, gain=1)
+        	    # torch.nn.init.kaiming_normal_(m.weight)
+        	    torch.nn.init.xavier_uniform_(m.weight, gain=1)
         	    if m.bias is not None:
         		    m.bias.data.zero_()
             elif classname.find('ConvTranspose2d') != -1:
-        	    torch.nn.init.kaiming_normal_(m.weight)
-        	    # torch.nn.init.xavier_uniform_(m.weight, gain=1)
+        	    # torch.nn.init.kaiming_normal_(m.weight)
+        	    torch.nn.init.xavier_uniform_(m.weight, gain=1)
         	    if m.bias is not None:
         		    m.bias.data.zero_()
 
     def forward(self, x):
-        
-        res = x
+
         x = self.head(x)
         x = self.body(x)
         x = self.output_conv(x)
-        x = torch.add(x, res)
-        # print(x)
-        # print(res)
+
         return x    

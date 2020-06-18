@@ -19,53 +19,19 @@ There are some implements of SR methods with Pytorch.  <br>
 
 ## Experiments on FEI face dateset
 Image-based algoritnms.
-<table>
-	<tr>
-		<td><center> </center></td>
-		<td><center>Bicubic</center></td>
-		<td><center>EDSR_original</center></td>
-		<td><center>EDSR+b16k64</center></td>
-		<td><center>EDSR+b32k256</center></td>
-		<td><center>SRResNet</center></td>
-		<td><center>RDN</center></td>
-		<td><center>DBPN</center></td>
-		<td><center>RCAN</center></td>
-	</tr>
-	<tr>
-		<td>
-			<center>PSNR</center>
-		</td>
-		<td>
-			<center>36.38</center>
-		</td>
-		<td>
-			<center>39.81</center>
-		</td>
-		<td>
-			<center>39.85</center>
-		</td>
-		<td>
-			<center>40.05</center>
-		</td>
-		<td>
-			<center>40.04</center>
-		</td>
-		<td>
-			<center>39.90</center>
-		</td>
-		<td>
-			<center>40.14</center>
-		</td>
-		<td>
-			<center>40.03</center>
-		</td>
-	</tr>
-</table>
+|Algorithms|Bicubic|EDSR_original|EDSR+b16k64|EDSR+b32k256|SRResNet|RDN|DBPN|RCAN|
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+|PSNR | 36.38 | 39.81 | 39.85 | 40.05 | 40.04 | 39.90 | 40.14 | 40.03 |
+
 Patch-based algoritnms.
+|Algorithms|Bicubic|SRCNN_original|VDSR_original|
+|:---:|:---:|:---:|:---:|
+|PSNR | 36.38 | 38.58 | 39.54 |
 <table>
 	<tr>
 		<td><center> </center></td>
 		<td><center>Bicubic</center></td>
+		<td><center>SRCNN_original</center></td>
 		<td><center>VDSR_original</center></td>
 	</tr>
 	<tr>
@@ -74,6 +40,9 @@ Patch-based algoritnms.
 		</td>
 		<td>
 			<center>36.38</center>
+		</td>
+		<td>
+			<center>38.58</center>
 		</td>
 		<td>
 			<center>39.54</center>

@@ -4,7 +4,7 @@
 @Author: wjm
 @Date: 2020-01-29 18:19:22
 @LastEditTime: 2020-06-12 18:04:17
-@Description: batch_size=16, patch_size=32, L1 loss, epoch=2000
+@Description: batch_size=16, patch_size=32, L1 loss, lr=1e-4, epoch=2000, ADAM, decay=1000
 '''
 import os
 import torch.nn as nn

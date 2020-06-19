@@ -4,7 +4,7 @@
 @Author: wjm
 @Date: 2020-06-16 15:19:38
 @LastEditTime: 2020-06-16 19:44:06
-@Description: file content
+@Description: batch-size = 64, patch-size = 33, MSE, SGD, lr = 0.01, epoch = 1000, decay=5000
 '''
 
 import os

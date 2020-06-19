@@ -7,6 +7,7 @@ There are some implements of SR methods with Pytorch.  <br>
 * RDN in rdn.py ([Residual Dense Network for Image SR](https://arxiv.org/pdf/1802.08797v2.pdf))
 * EDSR in edsr.py ([Enhanced Deep Residual Networks for Single Image Super-Resolution](https://arxiv.org/abs/1707.02921))
 * SRResNet in srresnet.py ([Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network](https://arxiv.org/abs/1609.04802))
+* SRCNN in srcnn.py ([Image Super-Resolution Using Deep Convolutional Networks](https://arxiv.org/abs/1501.00092))
 
 ## Dependencies
 * Python 3.5.3
@@ -24,9 +25,9 @@ Image-based algoritnms.
 |PSNR | 36.38 | 39.81 | 39.85 | 40.05 | 40.04 | 39.90 | 40.14 | 40.03 |
 
 Patch-based algoritnms.
-|Algorithms|Bicubic|SRCNN_original|VDSR_original|
-|:---:|:---:|:---:|:---:|
-|PSNR | 36.38 | 38.58 | 39.54 |
+|Algorithms|Bicubic|SRCNN_original|SRCNN|VDSR_original|
+|:---:|:---:|:---:|:---:|:---:|
+|PSNR | 36.38 | 38.58 | 38.61 |39.54 |
 
 `tensorboard --logdir log`</br>
 

@@ -15,12 +15,12 @@ import h5py
 
 class image_to_patch:
     
-    def __init__(self, patch_size, scale, image_patch, output_filename):
+    def __init__(self, patch_size, scale, image_path, output_filename):
 
         self.hr_patch_size = patch_size
         self.lr_patch_size = patch_size
         self.scale = scale
-        self.image_patch = image_patch
+        self.image_path = image_path
         self.labels = []
         self.inputs = []
         self.batch_size = 64
@@ -29,12 +29,12 @@ class image_to_patch:
 
     def to_patch(self):
         
-        data = glob.glob(os.path.join(self.image_patch, '*.png'))
+        data = glob.glob(os.path.join(self.image_path, '*.png'))
 
         for i in range(len(data)):
 
             img = self.imread(data[i])
-        
+            img = self.modcrop(img, self.scale)
             img_lr = misc.imresize(img, 1 / self.scale, interp='bicubic')
             img_bic = misc.imresize(img_lr, float(self.scale), interp='bicubic')
             # misc.imsave('outfile.png', img_bic)
@@ -92,13 +92,13 @@ class image_to_patch:
 
         if len(img.shape) ==3:
             h, w, _ = img.shape
-            h = (h / scale) * scale
-            w = (w / scale) * scale
+            h = (h // scale) * scale
+            w = (w // scale) * scale
             img = img[0:h, 0:w, :]
         else:
             h, w = img.shape
-            h = (h / scale) * scale
-            w = (w / scale) * scale
+            h = (h // scale) * scale
+            w = (w // scale) * scale
             img = img[0:h, 0:w]
         return img
 
@@ -106,12 +106,12 @@ class image_to_patch:
 if __name__ == '__main__':
     csnln_path = 41
     scale = 4
-    image_patch_train = r'/home/wjmecho/workdir/SR/N_SR-master/dataset/hr/'
+    image_pach_train = r'/home/wjmecho/workdir/SR/N_SR-master/dataset/hr/'
     output_filename_train = 'train.h5'
-    train = image_to_patch(csnln_path, scale, image_patch_train, output_filename_train)
+    train = image_to_patch(csnln_path, scale, image_pach_train, output_filename_train)
     train.to_patch()
 
-    image_patch_test = r'/home/wjmecho/workdir/SR/N_SR-master/dataset/valid/'
+    image_pach_test = r'/home/wjmecho/workdir/SR/N_SR-master/dataset/valid/'
     output_filename_test = 'test.h5'
-    test = image_to_patch(csnln_path, scale, image_patch_test, output_filename_test)
+    test = image_to_patch(csnln_path, scale, image_pach_test, output_filename_test)
     test.to_patch()

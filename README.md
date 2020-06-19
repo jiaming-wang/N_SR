@@ -17,11 +17,11 @@ There are some implements of SR methods with Pytorch.  <br>
 ### Getting started
 Image-based algoritnms.
 * Train: `python main.py`. </br>
-* Test: `python eval.py`. More details in `option.py`.</br>
 
 Patch-based algoritnms.
 * Image to patch:`pythonimage_to_patch.py`. </br>
 * Train: `python main.py`. </br>
+
 * Test: `python eval.py`. More details in `option.py`.</br>
 
 ## Experiments on FEI face dateset (without augmentation)

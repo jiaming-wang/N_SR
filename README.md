@@ -15,8 +15,14 @@ There are some implements of SR methods with Pytorch.  <br>
 * tensorboardX
 
 ### Getting started
-* Train: `python main.py`. More details in `option.py`</br>
-* Test: `python eval.py`.
+Image-based algoritnms.
+* Train: `python main.py`. </br>
+
+Patch-based algoritnms.
+* Image to patch:`pythonimage_to_patch.py`. </br>
+* Train: `python main.py`. </br>
+
+* Test: `python eval.py`. More details in `option.py`.</br>
 
 ## Experiments on FEI face dateset (without augmentation)
 Image-based algoritnms.

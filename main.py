@@ -3,15 +3,19 @@
 '''
 @Author: wjm
 @Date: 2019-10-12 23:50:07
-@LastEditTime: 2019-10-13 23:32:02
+@LastEditTime: 2020-06-20 23:58:20
 @Description: main.py
 '''
 
 from utils.config import get_config
 from solver.solver import Solver
+import argparse
 
 if __name__ == '__main__':
-    cfg = get_config('option.yml')
+    parser = argparse.ArgumentParser(description='N_SR')
+    parser.add_argument('--option_path', type=str, default='option.yml')
+    opt = parser.parse_args()
+    cfg = get_config(opt.option_path)
     solver = Solver(cfg)
     solver.run()
     

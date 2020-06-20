@@ -14,7 +14,7 @@ from torchvision.transforms import *
 import torch
 
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, num_stages, scale_factor, args):
+    def __init__(self, num_channels, base_filter, scale_factor, args):
         super(Net, self).__init__()
         self.args = args
         num_stages = 7

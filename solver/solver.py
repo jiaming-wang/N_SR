@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-@LastEditTime: 2020-06-02 21:44:46
+@LastEditTime: 2020-06-20 17:01:02
 @Description: file content
 '''
 import os
@@ -183,4 +183,6 @@ class Solver(BaseSolver):
             self.eval()
             self.save_checkpoint()
             self.epoch += 1
+        else:
+            raise Exception("Pretrain epoch must less than the max epoch!")
         #self.logger.log('Training done.')

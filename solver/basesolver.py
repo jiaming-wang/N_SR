@@ -3,18 +3,16 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:07:03
-@LastEditTime: 2020-06-22 11:10:20
+@LastEditTime: 2020-06-22 11:14:07
 @Description: file content
 '''
 import os
 import time
 from utils.utils import  draw_curve_and_save, save_config
 import torch
-from utils.config import save_yml
 from data.dataset import data
 from data.data import get_data
 from torch.utils.data import DataLoader
-from tensorboardX import SummaryWriter
 
 class BaseSolver:
     def __init__(self, cfg):

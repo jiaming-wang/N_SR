@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-@LastEditTime: 2020-06-20 17:01:02
+@LastEditTime: 2020-06-22 11:11:04
 @Description: file content
 '''
 import os
@@ -25,7 +25,7 @@ class Solver(BaseSolver):
     def __init__(self, cfg):
         super(Solver, self).__init__(cfg)
         self.init_epoch = self.cfg['schedule']
-
+        
         net_name = self.cfg['algorithm'].lower()
         lib = importlib.import_module('model.' + net_name)
         net = lib.Net
@@ -45,10 +45,14 @@ class Solver(BaseSolver):
             scale_factor=self.cfg['data']['upsacle'], 
             args = self.cfg
         )
-        save_net_config(self.timestamp, self.model)
+        
         self.optimizer = maek_optimizer(self.cfg['schedule']['optimizer'], cfg, self.model.parameters())
         self.loss = make_loss(self.cfg['schedule']['loss'])
 
+        # save log
+        self.writer = SummaryWriter('log/' + str(self.timestamp))
+        save_net_config(self.timestamp, self.model)
+        save_yml(cfg, os.path.join('log/' + str(self.timestamp), 'config.yml'))
         save_config(self.timestamp, 'Train dataset has {} images and {} batches.'.format(len(self.train_dataset), len(self.train_loader)))
         save_config(self.timestamp, 'Val dataset has {} images and {} batches.'.format(len(self.val_dataset), len(self.val_loader)))
         save_config(self.timestamp, 'Model parameters: '+ str(sum(param.numel() for param in self.model.parameters())))
@@ -158,6 +162,8 @@ class Solver(BaseSolver):
         if os.path.exists(checkpoint):
             self.model.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: storage)['net'])
             self.epoch = torch.load(checkpoint, map_location=lambda storage, loc: storage)['epoch']
+            if self.epoch > self.nEpochs:
+                raise Exception("Pretrain epoch must less than the max epoch!")
         else:
             raise Exception("Pretrain path error!")
 
@@ -183,6 +189,4 @@ class Solver(BaseSolver):
             self.eval()
             self.save_checkpoint()
             self.epoch += 1
-        else:
-            raise Exception("Pretrain epoch must less than the max epoch!")
         #self.logger.log('Training done.')

@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:07:03
-@LastEditTime: 2020-02-18 15:52:45
+@LastEditTime: 2020-06-22 11:10:20
 @Description: file content
 '''
 import os
@@ -25,7 +25,6 @@ class BaseSolver:
 
         # print(time.time())
         self.timestamp = int(time.time())
-        self.writer = SummaryWriter('log/' + str(self.timestamp))
 
         if cfg['gpu_mode']:
             self.num_workers = cfg['threads']
@@ -44,7 +43,6 @@ class BaseSolver:
         if not os.path.exists(self.checkpoint_dir):
             os.makedirs(self.checkpoint_dir)
 
-        save_yml(cfg, os.path.join('log/' + str(self.timestamp), 'config.yml'))
 
 
     # def save_records(self):

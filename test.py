@@ -3,12 +3,12 @@
 '''
 @Author: wjm
 @Date: 2019-10-12 23:50:07
-@LastEditTime: 2020-06-18 20:23:27
+@LastEditTime: 2020-06-23 14:47:44
 @Description: test.py
 '''
 
-from utils.config import get_config
-from solver.testsolver import Testsolver
+from utils import get_config
+from solver import Testsolver
 
 if __name__ == '__main__':
     cfg = get_config('option.yml')

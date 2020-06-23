@@ -3,17 +3,15 @@
 '''
 @Author: wjm
 @Date: 2019-10-23 14:57:22
-@LastEditTime: 2020-02-18 15:31:53
+@LastEditTime: 2020-06-23 15:00:05
 @Description: file content
 '''
 import torch.utils.data as data
-import torch
+import torch, random, os
 import numpy as np
-import os
 from os import listdir
 from os.path import join
 from PIL import Image, ImageOps
-import random
 from random import randrange
 
 def is_image_file(filename):

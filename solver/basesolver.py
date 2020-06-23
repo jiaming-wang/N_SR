@@ -3,13 +3,11 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:07:03
-@LastEditTime: 2020-06-22 11:14:07
+@LastEditTime: 2020-06-23 15:03:05
 @Description: file content
 '''
-import os
-import time
+import os, torch, time
 from utils.utils import  draw_curve_and_save, save_config
-import torch
 from data.dataset import data
 from data.data import get_data
 from torch.utils.data import DataLoader

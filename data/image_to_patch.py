@@ -3,15 +3,14 @@
 '''
 @Author: wjm
 @Date: 2020-06-13 20:12:23
-@LastEditTime: 2020-06-18 20:37:25
+@LastEditTime: 2020-06-23 15:00:30
 @Description: file content
 '''
 import numpy as np 
-import glob
+import glob, os, h5py
 import os
 # import cv2
 from scipy import misc
-import h5py
 
 class image_to_patch:
     

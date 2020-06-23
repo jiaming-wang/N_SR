@@ -3,16 +3,15 @@
 '''
 @Author: wjm
 @Date: 2020-02-16 19:22:41
-@LastEditTime: 2020-02-18 16:00:02
+@LastEditTime: 2020-06-23 14:59:44
 @Description: file content
 '''
 from os.path import join
 from torchvision.transforms import Compose, ToTensor
 from .dataset import Data, Data_test, Data_eval, Data_patch
 from torchvision import transforms
-import torch, h5py
+import torch, h5py, numpy
 import torch.utils.data as data
-import numpy
 
 def transform():
     return Compose([

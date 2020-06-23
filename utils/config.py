@@ -3,13 +3,11 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 21:48:53
-@LastEditTime: 2020-02-18 15:20:26
+@LastEditTime: 2020-06-23 15:01:36
 @Description: file content
 '''
 
-import re 
-import yaml
-import os
+import re, yaml, os  
 
 def get_config(cfg_path):
     loader = yaml.SafeLoader

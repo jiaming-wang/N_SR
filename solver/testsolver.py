@@ -3,17 +3,15 @@
 '''
 @Author: wjm
 @Date: 2020-02-17 22:19:38
-@LastEditTime: 2020-02-18 14:39:41
+@LastEditTime: 2020-06-23 15:02:22
 @Description: file content
 '''
 from solver.basesolver import BaseSolver
-import os,torch
+import os, torch, time, cv2, importlib
 import torch.backends.cudnn as cudnn
 from data.data import *
 from torch.utils.data import DataLoader
-import time, cv2
-from torch.autograd import Variable
-import importlib
+from torch.autograd import Variable 
 
 class Testsolver(BaseSolver):
     def __init__(self, cfg):

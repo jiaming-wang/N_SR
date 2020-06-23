@@ -3,12 +3,12 @@
 '''
 @Author: wjm
 @Date: 2019-10-12 23:50:07
-@LastEditTime: 2020-06-20 23:58:20
+@LastEditTime: 2020-06-23 14:43:38
 @Description: main.py
 '''
 
-from utils.config import get_config
-from solver.solver import Solver
+from utils import get_config
+from solver import Solver
 import argparse
 
 if __name__ == '__main__':

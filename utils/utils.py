@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:12:52
-@LastEditTime: 2020-06-23 15:01:19
+@LastEditTime: 2020-06-23 15:07:50
 @Description: file content
 '''
 import os, math, torch,cv2
@@ -31,6 +31,8 @@ def make_loss(loss_type):
     elif loss_type == "L1":
         loss = nn.L1Loss()
     elif loss_type == "VGG22":
+        loss = VGG(loss_type[3:], rgb_range=255)
+    elif loss_type == "VGG54":
         loss = VGG(loss_type[3:], rgb_range=255)
     else:
         raise ValueError

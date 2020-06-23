@@ -19,11 +19,11 @@ train_dataset: hr
 valid_dataset: valid
 
 test:
-  algorithm: VDSR #[RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
+  algorithm: SRResNet #[RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
   type: test #[test, eval]
   data_dir: ./dataset
   test_dataset: valid
-  model: 1592193353/best.pth
+  model: 1592905702/best.pth
 
 pretrain:
   pretrained: False

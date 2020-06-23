@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:07:03
-@LastEditTime: 2020-06-23 15:03:05
+@LastEditTime: 2020-06-23 16:28:38
 @Description: file content
 '''
 import os, torch, time
@@ -38,8 +38,6 @@ class BaseSolver:
 
         if not os.path.exists(self.checkpoint_dir):
             os.makedirs(self.checkpoint_dir)
-
-
 
     # def save_records(self):
         # with open(os.path.join('log', 'records.txt'), 'wt') as f:

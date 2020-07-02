@@ -5,6 +5,7 @@
 @Date: 2020-02-14 22:38:14
 @LastEditTime : 2020-02-16 14:03:44
 @Description: batch_size=16, patch_size=24, MSE loss, epoch=8000, lr=1e-4, ADAD, decay=4000
+official: batch_size=16, patch_size=24, MSE loss, epoch=500, lr=1e-4, ADAD, decay=250
 '''
 
 import os

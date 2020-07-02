@@ -26,7 +26,7 @@ Patch-based algoritnms.
 
 ## Experiments on FEI face dateset (without augmentation and pre-train)
 Image-based algoritnms.
-|Algorithms|Bicubic|EDSR_original|EDSR+b16k64|EDSR+b32k256|SRResNet|RDN|DBPN|RCAN|
+|Algorithms|Bicubic|EDSR_original|EDSR+b16k64|EDSR+b32k256|SRResNet without BN|RDN|DBPN|RCAN|
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 |PSNR | 36.38 | 39.81 | 39.85 | 40.05 | 40.04 | 39.90 | 40.14 | 40.03 |
 

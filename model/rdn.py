@@ -5,6 +5,7 @@
 @Date: 2020-01-29 17:54:45
 @LastEditTime : 2020-02-16 15:53:33
 @Description: batch_size=16, patch_size=32, L1 loss, lr=1e-4, epoch=5000, decay=2500, ADAM
+official: batch_size=16, patch_size=32, L1 loss, lr=1e-4, epoch=1000, decay=200, ADAM
 '''
 
 import os

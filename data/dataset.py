@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-23 14:57:22
-@LastEditTime: 2020-06-23 15:00:05
+@LastEditTime: 2020-06-30 19:31:07
 @Description: file content
 '''
 import torch.utils.data as data
@@ -89,6 +89,7 @@ class Data(data.Dataset):
         self.normalize = normalize
 
     def __getitem__(self, index):
+    
         target = load_img(self.image_filenames[index])
         _, file = os.path.split(self.image_filenames[index])
         target = target.crop((0, 0, target.size[0] // self.upscale_factor * self.upscale_factor, target.size[1] // self.upscale_factor * self.upscale_factor))
@@ -104,6 +105,8 @@ class Data(data.Dataset):
             target = self.transform(target)
 
         if self.normalize:
+            input = (input + 1) / 2
+            bicubic = (bicubic + 1) / 2
             target = (target + 1) / 2
             
         return input, target, bicubic
@@ -114,6 +117,7 @@ class Data(data.Dataset):
 class Data_patch(data.Dataset):
     def __init__(self, image_dir, patch_size, upscale_factor, data_augmentation, normalize, transform=None):
         super(Data_patch, self).__init__()
+        
         self.image_filenames = [join(image_dir, x) for x in listdir(image_dir) if is_image_file(x)]
         self.patch_size = patch_size
         self.upscale_factor = upscale_factor
@@ -122,6 +126,7 @@ class Data_patch(data.Dataset):
         self.normalize = normalize
 
     def __getitem__(self, index):
+    
         target = load_img(self.image_filenames[index])
         _, file = os.path.split(self.image_filenames[index])
         target = target.crop((0, 0, target.size[0] // self.upscale_factor * self.upscale_factor, target.size[1] // self.upscale_factor * self.upscale_factor))
@@ -137,6 +142,8 @@ class Data_patch(data.Dataset):
             target = self.transform(target)
 
         if self.normalize:
+            input = (input + 1) / 2
+            bicubic = (bicubic + 1) / 2
             target = (target + 1) / 2
             
         return input, target, bicubic
@@ -147,12 +154,14 @@ class Data_patch(data.Dataset):
 class Data_test(data.Dataset):
     def __init__(self, image_dir, upscale_factor, transform=None):
         super(Data_test, self).__init__()
+        
         self.image_filenames = [join(image_dir, x) for x in listdir(image_dir) if is_image_file(x)]
         self.upscale_factor = upscale_factor
         self.transform = transform
 
 
     def __getitem__(self, index):
+    
         target = load_img(self.image_filenames[index])
         _, file = os.path.split(self.image_filenames[index])
         target = target.crop((0, 0, target.size[0] // self.upscale_factor * self.upscale_factor, target.size[1] // self.upscale_factor * self.upscale_factor))
@@ -172,11 +181,13 @@ class Data_test(data.Dataset):
 class Data_eval(data.Dataset):
     def __init__(self, image_dir, upscale_factor, transform=None):
         super(Data_eval, self).__init__()
+        
         self.image_filenames = [join(image_dir, x) for x in listdir(image_dir) if is_image_file(x)]
         self.upscale_factor = upscale_factor
         self.transform = transform
 
     def __getitem__(self, index):
+    
         input = load_img(self.image_filenames[index])      
         bicubic = rescale_img(input, self.upscale_factor)
         _, file = os.path.split(self.image_filenames[index])

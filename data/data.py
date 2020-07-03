@@ -45,8 +45,10 @@ class DatasetFromHdf5(data.Dataset):
     
 def get_test_data(cfg, data_dir, upscale_factor):
     data_dir = join(cfg['test']['data_dir'], data_dir)
-    return Data_test(data_dir, upscale_factor, transform=transform())
+    normalize = cfg['data']['normalize']
+    return Data_test(data_dir, upscale_factor, normalize, transform=transform())
 
 def get_eval_data(cfg, data_dir, upscale_factor):
     data_dir = join(cfg['test']['data_dir'], data_dir)
-    return Data_eval(data_dir, upscale_factor, transform=transform())
+    normalize = cfg['data']['normalize']
+    return Data_eval(data_dir, upscale_factor, normalize, transform=transform())

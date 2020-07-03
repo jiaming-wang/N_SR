@@ -98,7 +98,10 @@ class Testsolver(BaseSolver):
             os.makedirs(save_dir)
         
         save_fn = save_dir +'/'+ img_name
-        cv2.imwrite(save_fn, cv2.cvtColor(save_img*255, cv2.COLOR_BGR2RGB),  [cv2.IMWRITE_PNG_COMPRESSION, 0])
+        if self.cfg['data']['normalize'] :
+            cv2.imwrite(save_fn, cv2.cvtColor((save_img+1)*127.5, cv2.COLOR_BGR2RGB),  [cv2.IMWRITE_PNG_COMPRESSION, 0])
+        else:
+            cv2.imwrite(save_fn, cv2.cvtColor(save_img*255, cv2.COLOR_BGR2RGB),  [cv2.IMWRITE_PNG_COMPRESSION, 0])
    
     def run(self):
         self.check()

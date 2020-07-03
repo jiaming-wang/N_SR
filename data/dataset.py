@@ -105,9 +105,9 @@ class Data(data.Dataset):
             target = self.transform(target)
 
         if self.normalize:
-            input = (input + 1) / 2
-            bicubic = (bicubic + 1) / 2
-            target = (target + 1) / 2
+            input = input * 2 - 1
+            bicubic = bicubic * 2 - 1
+            target = target * 2 - 1
             
         return input, target, bicubic
 
@@ -142,9 +142,9 @@ class Data_patch(data.Dataset):
             target = self.transform(target)
 
         if self.normalize:
-            input = (input + 1) / 2
-            bicubic = (bicubic + 1) / 2
-            target = (target + 1) / 2
+            input = input * 2 - 1
+            bicubic = bicubic * 2 - 1
+            target = target * 2 - 1
             
         return input, target, bicubic
 
@@ -152,7 +152,7 @@ class Data_patch(data.Dataset):
         return len(self.image_filenames)
 
 class Data_test(data.Dataset):
-    def __init__(self, image_dir, upscale_factor, transform=None):
+    def __init__(self, image_dir, upscale_factor, normalize, transform=None):
         super(Data_test, self).__init__()
         
         self.image_filenames = [join(image_dir, x) for x in listdir(image_dir) if is_image_file(x)]
@@ -172,6 +172,11 @@ class Data_test(data.Dataset):
             input = self.transform(input)
             bicubic = self.transform(bicubic)
             target = self.transform(target)
+        
+        if self.normalize:
+            input = input * 2 - 1
+            bicubic = bicubic * 2 - 1
+            target = target * 2 - 1
             
         return input, target, bicubic, file
 
@@ -179,7 +184,7 @@ class Data_test(data.Dataset):
         return len(self.image_filenames)
 
 class Data_eval(data.Dataset):
-    def __init__(self, image_dir, upscale_factor, transform=None):
+    def __init__(self, image_dir, upscale_factor, normalize, transform=None):
         super(Data_eval, self).__init__()
         
         self.image_filenames = [join(image_dir, x) for x in listdir(image_dir) if is_image_file(x)]
@@ -195,6 +200,11 @@ class Data_eval(data.Dataset):
         if self.transform:
             input = self.transform(input)
             bicubic = self.transform(bicubic)
+            
+        if self.normalize:
+            input = input * 2 - 1
+            bicubic = bicubic * 2 - 1
+            target = target * 2 - 1
             
         return input, bicubic, file
 

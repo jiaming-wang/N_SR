@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-02-17 22:19:38
-@LastEditTime: 2020-06-23 15:02:22
+@LastEditTime: 2020-07-10 18:17:33
 @Description: file content
 '''
 from solver.basesolver import BaseSolver
@@ -65,9 +65,14 @@ class Testsolver(BaseSolver):
                 input = bicubic
 
             t0 = time.time()
-            prediction = self.model(input)
-
+            prediction = self.model(input)   
             t1 = time.time()
+
+            if self.cfg['data']['normalize'] :
+                target = (target+1) /2
+                prediction = (prediction+1) /2
+                bicubic = (bicubic+1) /2
+
             print("===> Processing: %s || Timer: %.4f sec." % (name[0], (t1 - t0)))
             self.save_img(bicubic.cpu().data, name[0][0:-4]+'_bic.png')
             self.save_img(target.cpu().data, name[0][0:-4]+'_gt.png')
@@ -98,10 +103,7 @@ class Testsolver(BaseSolver):
             os.makedirs(save_dir)
         
         save_fn = save_dir +'/'+ img_name
-        if self.cfg['data']['normalize'] :
-            cv2.imwrite(save_fn, cv2.cvtColor((save_img+1)*127.5, cv2.COLOR_BGR2RGB),  [cv2.IMWRITE_PNG_COMPRESSION, 0])
-        else:
-            cv2.imwrite(save_fn, cv2.cvtColor(save_img*255, cv2.COLOR_BGR2RGB),  [cv2.IMWRITE_PNG_COMPRESSION, 0])
+        cv2.imwrite(save_fn, cv2.cvtColor(save_img*255, cv2.COLOR_BGR2RGB),  [cv2.IMWRITE_PNG_COMPRESSION, 0])
    
     def run(self):
         self.check()

@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-22 09:46:19
-@LastEditTime: 2020-06-12 18:03:41
+@LastEditTime: 2020-07-10 16:13:05
 @Description: file content
 '''
 import torch
@@ -19,11 +19,18 @@ class Upsampler(torch.nn.Module):
     def __init__(self, scale, n_feat, bn=False, activation='prelu', bias=True):
         super(Upsampler, self).__init__()
         modules = []
-        for _ in range(int(math.log(scale, 2))):
-            modules.append(ConvBlock(n_feat, 4 * n_feat, 3, 1, 1, bias, activation=None, norm=None))
-            modules.append(torch.nn.PixelShuffle(2))
-            if bn: modules.append(torch.nn.BatchNorm2d(n_feat))
-            #modules.append(torch.nn.PReLU())
+        if scale == 3:
+            modules.append(ConvBlock(n_feat, 9 * n_feat, 3, 1, 1, bias, activation=None, norm=None))
+            modules.append(torch.nn.PixelShuffle(3))
+            if bn: 
+                modules.append(torch.nn.BatchNorm2d(n_feat))
+        else:
+            for _ in range(int(math.log(scale, 2))):
+                modules.append(ConvBlock(n_feat, 4 * n_feat, 3, 1, 1, bias, activation=None, norm=None))
+                modules.append(torch.nn.PixelShuffle(2))
+                if bn: 
+                    modules.append(torch.nn.BatchNorm2d(n_feat))
+        
         self.up = torch.nn.Sequential(*modules)
         
         self.activation = activation

@@ -57,7 +57,7 @@ class Net(nn.Module):
         self.GFF_1x1 = nn.Conv2d(self.G0*3, self.G0, kernel_size=1, padding=0, bias=True)
         self.GFF_3x3 = nn.Conv2d(self.G0, self.G0, kernel_size=1, padding=0, bias=True)
 
-        self.up = Upsampler(4, self.G0, activation=None)
+        self.up = Upsampler(scale_factor, self.G0, activation=None)
         self.output_conv = ConvBlock(self.G0, num_channels, 3, 1, 1, activation=None, norm=None)
 
         for m in self.modules():

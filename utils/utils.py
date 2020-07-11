@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:12:52
-@LastEditTime: 2020-07-11 19:13:34
+@LastEditTime: 2020-07-11 20:14:11
 @Description: file content
 '''
 import os, math, torch,cv2
@@ -12,6 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 from utils.vgg import VGG
+import torch.nn.functional as F
 
 def maek_optimizer(opt_type, cfg, params):
     if opt_type == "ADAM":
@@ -37,6 +38,36 @@ def make_loss(loss_type):
         raise ValueError
     return loss
 
+class TVLoss(nn.Module):
+    def __init__(self, TVLoss_weight = 1):
+        super(TVLoss, self).__init__()
+        self.TVLoss_weight = TVLoss_weight
+
+    def forward(self, x):
+        batch_size = x.size()[0]
+        h_x = x.size()[2]
+        w_x = x.size()[3]
+        count_h = (x.size()[2] - 1) * x.size()[3]
+        count_w = x.size()[2] * (x.size()[3] - 1)
+        h_tv = torch.pow((x[:,:,1:,:]-x[:,:,:h_x-1,:]),2).sum()
+        w_tv = torch.pow((x[:,:,:,1:]-x[:,:,:,:w_x-1]),2).sum()
+        return self.TVLoss_weight*2*(h_tv/count_h+w_tv/count_w)/batch_size
+
+class CycleLoss(nn.Module):
+    def __init__(self, CycleLoss_weigth = 1, scale = 1/2, loss_type = 'L1'):
+        
+        self.CycleLoss_weigth = CycleLoss_weigth
+        self.scale = scale
+
+        if loss_type == "MSE":
+            self.loss = nn.MSELoss()
+        elif loss_type == "L1":
+            self.loss = nn.L1Loss()
+
+    def forward(self, x_hr, x_lr):
+        down_x = F.interpolate(x_hr, scale_factor=self.scale, mode='bicubic')
+        return self.loss(down_x, x_lr)
+        
 def get_path(subdir):
     return os.path.join(subdir)
 
@@ -77,7 +108,6 @@ def draw_curve_and_save(x, y, title, filename, precision):
     ax.plot(x, y)
     plt.savefig(filename)
 
-
 def calculate_psnr(img1, img2, pixel_range=255, color_mode='rgb'):
     # transfer color channel to y
     if color_mode == 'rgb':
@@ -96,7 +126,6 @@ def calculate_psnr(img1, img2, pixel_range=255, color_mode='rgb'):
     if mse == 0:
         return float('inf')
     return 20 * math.log10(pixel_range / math.sqrt(mse))
-
 
 def ssim(img1, img2, pixel_range=255, color_mode='rgb'):
     C1 = (0.01 * pixel_range)**2
@@ -130,7 +159,6 @@ def ssim(img1, img2, pixel_range=255, color_mode='rgb'):
     ssim_map = ((2 * mu1_mu2 + C1) * (2 * sigma12 + C2)) / (
         (mu1_sq + mu2_sq + C1) * (sigma1_sq + sigma2_sq + C2))
     return ssim_map.mean()
-
 
 def calculate_ssim(img1, img2, pixel_range=255):
     '''calculate SSIM

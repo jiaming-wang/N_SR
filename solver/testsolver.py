@@ -12,6 +12,7 @@ import torch.backends.cudnn as cudnn
 from data.data import *
 from torch.utils.data import DataLoader
 from torch.autograd import Variable 
+import numpy as np
 
 class Testsolver(BaseSolver):
     def __init__(self, cfg):
@@ -53,6 +54,7 @@ class Testsolver(BaseSolver):
 
     def test(self):
         self.model.eval()
+        avg_time= []
         for batch in self.data_loader:
             with torch.no_grad():
                 input, target, bicubic, name = Variable(batch[0]), Variable(batch[1]), Variable(batch[2]), batch[3]
@@ -74,10 +76,12 @@ class Testsolver(BaseSolver):
                 bicubic = (bicubic+1) /2
 
             print("===> Processing: %s || Timer: %.4f sec." % (name[0], (t1 - t0)))
+            avg_time.append(t1 - t0)
             self.save_img(bicubic.cpu().data, name[0][0:-4]+'_bic.png')
             self.save_img(target.cpu().data, name[0][0:-4]+'_gt.png')
             self.save_img(prediction.cpu().data, name[0][0:-4]+'.png')
-    
+        print("===> AVG Timer: %.4f sec." % (np.mean(avg_time)))
+        
     def eval(self):
         self.model.eval()
         for batch in self.data_loader:

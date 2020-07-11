@@ -158,7 +158,7 @@ class Data_test(data.Dataset):
         self.image_filenames = [join(image_dir, x) for x in listdir(image_dir) if is_image_file(x)]
         self.upscale_factor = upscale_factor
         self.transform = transform
-
+        self.normalize = normalize
 
     def __getitem__(self, index):
     

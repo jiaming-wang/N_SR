@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:12:52
-@LastEditTime: 2020-06-23 15:07:50
+@LastEditTime: 2020-07-11 19:13:34
 @Description: file content
 '''
 import os, math, torch,cv2
@@ -23,7 +23,6 @@ def maek_optimizer(opt_type, cfg, params):
     else:
         raise ValueError
     return optimizer
-
 
 def make_loss(loss_type):
     if loss_type == "MSE":

@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:12:52
-@LastEditTime: 2020-07-11 20:14:11
+@LastEditTime: 2020-07-11 20:17:48
 @Description: file content
 '''
 import os, math, torch,cv2
@@ -63,6 +63,8 @@ class CycleLoss(nn.Module):
             self.loss = nn.MSELoss()
         elif loss_type == "L1":
             self.loss = nn.L1Loss()
+        else:
+            raise ValueError
 
     def forward(self, x_hr, x_lr):
         down_x = F.interpolate(x_hr, scale_factor=self.scale, mode='bicubic')

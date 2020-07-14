@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-@LastEditTime: 2020-06-23 15:02:49
+@LastEditTime: 2020-07-13 17:03:29
 @Description: file content
 '''
 import os, importlib, torch, shutil
@@ -48,13 +48,14 @@ class Solver(BaseSolver):
         self.optimizer = maek_optimizer(self.cfg['schedule']['optimizer'], cfg, self.model.parameters())
         self.loss = make_loss(self.cfg['schedule']['loss'])
 
+        self.log_name = self.cfg['algorithm'] + '_' + self.cfg['data']['upsacle'] + '_' + str(self.timestamp)
         # save log
-        self.writer = SummaryWriter('log/' + str(self.timestamp))
-        save_net_config(self.timestamp, self.model)
-        save_yml(cfg, os.path.join('log/' + str(self.timestamp), 'config.yml'))
-        save_config(self.timestamp, 'Train dataset has {} images and {} batches.'.format(len(self.train_dataset), len(self.train_loader)))
-        save_config(self.timestamp, 'Val dataset has {} images and {} batches.'.format(len(self.val_dataset), len(self.val_loader)))
-        save_config(self.timestamp, 'Model parameters: '+ str(sum(param.numel() for param in self.model.parameters())))
+        self.writer = SummaryWriter('log/' + str(self.log_name))
+        save_net_config(self.log_name, self.model)
+        save_yml(cfg, os.path.join('log/' + str(self.log_name), 'config.yml'))
+        save_config(self.log_name, 'Train dataset has {} images and {} batches.'.format(len(self.train_dataset), len(self.train_loader)))
+        save_config(self.log_name, 'Val dataset has {} images and {} batches.'.format(len(self.val_dataset), len(self.val_loader)))
+        save_config(self.log_name, 'Model parameters: '+ str(sum(param.numel() for param in self.model.parameters())))
 
     def train(self): 
         with tqdm(total=len(self.train_loader), miniters=1,
@@ -88,7 +89,7 @@ class Solver(BaseSolver):
                 self.optimizer.step()
                 
             self.records['Loss'].append(epoch_loss / len(self.train_loader))
-            save_config(self.timestamp, 'Initial Training Epoch {}: Loss={:.4f}'.format(self.epoch, self.records['Loss'][-1]))
+            save_config(self.log_name, 'Initial Training Epoch {}: Loss={:.4f}'.format(self.epoch, self.records['Loss'][-1]))
             self.writer.add_scalar('Loss_epoch', self.records['Loss'][-1], self.epoch)
 
     def eval(self):
@@ -123,16 +124,19 @@ class Solver(BaseSolver):
                 avg_ssim = np.array(batch_ssim).mean()
                 psnr_list.extend(batch_psnr)
                 ssim_list.extend(batch_ssim)
-                t1.set_postfix_str('Batch loss: {:.4f}, PSNR: {:.4f}, SSIM: {:.4f}'.format(loss.item(), avg_psnr,                                                                             avg_ssim))
+                t1.set_postfix_str('Batch loss: {:.4f}, PSNR: {:.4f}, SSIM: {:.4f}'.format(loss.item(), avg_psnr, avg_ssim))
                 t1.update()
             self.records['Epoch'].append(self.epoch)
             self.records['PSNR'].append(np.array(psnr_list).mean())
             self.records['SSIM'].append(np.array(ssim_list).mean())
 
-            save_config(self.timestamp, 'Val Epoch {}: PSNR={:.4f}, SSIM={:.4f}'.format(self.epoch, self.records['PSNR'][-1],
+            save_config(self.log_name, 'Val Epoch {}: PSNR={:.4f}, SSIM={:.4f}'.format(self.epoch, self.records['PSNR'][-1],
                                                                     self.records['SSIM'][-1]))
             self.writer.add_scalar('PSNR_epoch', self.records['PSNR'][-1], self.epoch)
             self.writer.add_scalar('SSIM_epoch', self.records['SSIM'][-1], self.epoch)
+            self.writer.add_image('image_SR', sr[0], self.epoch)
+            self.writer.add_image('image_LR', lr[0], self.epoch)
+            self.writer.add_image('image_HR', hr[0], self.epoch)
 
     def check_gpu(self):
         self.cuda = self.cfg['gpu_mode']
@@ -170,13 +174,13 @@ class Solver(BaseSolver):
         super(Solver, self).save_checkpoint()
         self.ckp['net'] = self.model.state_dict()
         self.ckp['optimizer'] = self.optimizer.state_dict()
-        if not os.path.exists(self.cfg['checkpoint'] + '/' + str(self.timestamp)):
-            os.mkdir(self.cfg['checkpoint'] + '/' + str(self.timestamp))
-        torch.save(self.ckp, os.path.join(self.cfg['checkpoint'] + '/' + str(self.timestamp), 'latest.pth'))
+        if not os.path.exists(self.cfg['checkpoint'] + '/' + str(self.log_name)):
+            os.mkdir(self.cfg['checkpoint'] + '/' + str(self.log_name))
+        torch.save(self.ckp, os.path.join(self.cfg['checkpoint'] + '/' + str(self.log_name), 'latest.pth'))
 
         if self.records['PSNR'] != [] and self.records['PSNR'][-1] == np.array(self.records['PSNR']).max():
-            shutil.copy(os.path.join(self.cfg['checkpoint'] + '/' + str(self.timestamp), 'latest.pth'),
-                        os.path.join(self.cfg['checkpoint'] + '/' + str(self.timestamp), 'best.pth'))
+            shutil.copy(os.path.join(self.cfg['checkpoint'] + '/' + str(self.log_name), 'latest.pth'),
+                        os.path.join(self.cfg['checkpoint'] + '/' + str(self.log_name), 'best.pth'))
 
     def run(self):
         self.check_gpu()
@@ -188,4 +192,4 @@ class Solver(BaseSolver):
             self.eval()
             self.save_checkpoint()
             self.epoch += 1
-        #self.logger.log('Training done.')
+        save_config(self.log_name, 'Training done.')

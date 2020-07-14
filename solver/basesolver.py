@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:07:03
-@LastEditTime: 2020-06-23 16:28:38
+@LastEditTime: 2020-07-13 16:45:30
 @Description: file content
 '''
 import os, torch, time
@@ -19,7 +19,6 @@ class BaseSolver:
         self.checkpoint_dir = cfg['checkpoint']
         self.epoch = 1
 
-        # print(time.time())
         self.timestamp = int(time.time())
 
         if cfg['gpu_mode']:
@@ -31,7 +30,7 @@ class BaseSolver:
         self.train_loader = DataLoader(self.train_dataset, cfg['data']['batch_size'], shuffle=True,
             num_workers=self.num_workers)
         self.val_dataset = get_data(cfg, cfg['valid_dataset'], cfg['data']['upsacle'])
-        self.val_loader = DataLoader(self.val_dataset, 1, shuffle=False,
+        self.val_loader = DataLoader(self.val_dataset, cfg['data']['batch_size'], shuffle=False,
             num_workers=self.num_workers)
 
         self.records = {'Epoch': [], 'PSNR': [], 'SSIM': [], 'Loss': []}

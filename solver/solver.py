@@ -48,7 +48,7 @@ class Solver(BaseSolver):
         self.optimizer = maek_optimizer(self.cfg['schedule']['optimizer'], cfg, self.model.parameters())
         self.loss = make_loss(self.cfg['schedule']['loss'])
 
-        self.log_name = self.cfg['algorithm'] + '_' + self.cfg['data']['upsacle'] + '_' + str(self.timestamp)
+        self.log_name = self.cfg['algorithm'] + '_' + str(self.cfg['data']['upsacle']) + '_' + str(self.timestamp)
         # save log
         self.writer = SummaryWriter('log/' + str(self.log_name))
         save_net_config(self.log_name, self.model)

@@ -64,10 +64,10 @@ class MeanShift(nn.Conv2d):
             p.requires_grad = False
 
 class ConvBlock(torch.nn.Module):
-    def __init__(self, input_size, output_size, kernel_size=3, stride=1, padding=1, bias=True, activation='prelu', norm=None):
+    def __init__(self, input_size, output_size, kernel_size=3, stride=1, padding=1, bias=True, activation='prelu', norm=None, pad_model=None):
         super(ConvBlock, self).__init__()
-        self.conv = torch.nn.Conv2d(input_size, output_size, kernel_size, stride, padding, bias=bias)
 
+        self.pad_model = pad_model
         self.norm = norm
         if self.norm =='batch':
             self.bn = torch.nn.BatchNorm2d(output_size)
@@ -85,35 +85,44 @@ class ConvBlock(torch.nn.Module):
             self.act = torch.nn.Tanh()
         elif self.activation == 'sigmoid':
             self.act = torch.nn.Sigmoid()
+        
+        if self.pad_model == None:   
+            self.conv = torch.nn.Conv2d(input_size, output_size, kernel_size, stride, padding, bias=bias)
+        elif self.pad_model == 'reflection':
+            self.padding = nn.Sequential(nn.ReflectionPad2d(padding))
+            self.conv = torch.nn.Conv2d(input_size, output_size, kernel_size, stride, 0, bias=bias)
 
     def forward(self, x):
+        out = x
+        if self.pad_model is not None:
+            out = self.padding(out)
+
         if self.norm is not None:
-            out = self.bn(self.conv(x))
+            out = self.bn(self.conv(out))
         else:
-            out = self.conv(x)
+            out = self.conv(out)
 
         if self.activation is not None:
             return self.act(out)
         else:
             return out
-
 ######################################
 #           srresnet
 ######################################
 class ResnetBlock_scale(torch.nn.Module):
-    def __init__(self, num_filter, scale=0.1, kernel_size=3, stride=1, padding=1, bias=True, activation='prelu', norm='batch'):
+    def __init__(self, num_filter, scale=0.1, kernel_size=3, stride=1, padding=1, bias=True, activation='prelu', norm='batch', pad_model=None):
         super(ResnetBlock_scale, self).__init__()
-        self.conv1 = torch.nn.Conv2d(num_filter, num_filter, kernel_size, stride, padding, bias=bias)
-        self.conv2 = torch.nn.Conv2d(num_filter, num_filter, kernel_size, stride, padding, bias=bias)
 
         self.scale = scale
         self.norm = norm
-        if self.norm == 'batch':
-            self.bn1 = torch.nn.BatchNorm2d(num_filter)
-            self.bn2 = torch.nn.BatchNorm2d(num_filter)
-        elif norm == 'instance':
-            self.bn1 = torch.nn.InstanceNorm2d(num_filter)
-            self.bn2 = torch.nn.InstanceNorm2d(num_filter)
+        self.pad_model = pad_model
+
+        if self.norm =='batch':
+            self.norm = torch.nn.BatchNorm2d(num_filter)
+        elif self.norm == 'instance':
+            self.norm = torch.nn.InstanceNorm2d(num_filter)
+        else:
+            self.norm = None
 
         self.activation = activation
         if self.activation == 'relu':
@@ -126,40 +135,42 @@ class ResnetBlock_scale(torch.nn.Module):
             self.act = torch.nn.Tanh()
         elif self.activation == 'sigmoid':
             self.act = torch.nn.Sigmoid()
+        else:
+            self.act = None
 
+        if self.pad_model == None:   
+            self.conv1 = torch.nn.Conv2d(num_filter, num_filter, kernel_size, stride, padding, bias=bias)
+            self.conv2 = torch.nn.Conv2d(num_filter, num_filter, kernel_size, stride, padding, bias=bias)
+            self.padding = None
+        elif self.pad_model == 'reflection':
+            self.padding = nn.Sequential(nn.ReflectionPad2d(padding))
+            self.conv1 = torch.nn.Conv2d(num_filter, num_filter, kernel_size, stride, 0, bias=bias)
+            self.conv2 = torch.nn.Conv2d(num_filter, num_filter, kernel_size, stride, 0, bias=bias)
+
+        layers = filter(lambda x: x is not None, [self.padding, self.conv1, self.norm, self.act, self.padding, self.conv2, self.norm, self.act])
+        self.layers = nn.Sequential(*layers)
 
     def forward(self, x):
         residual = x
-        if self.norm is not None:
-            out = self.bn1(self.conv1(x))
-        else:
-            out = self.conv1(x)
-
-        if self.activation is not None:
-            out = self.act(out)
-
-        if self.norm is not None:
-            out = self.bn2(self.conv2(out))
-        else:
-            out = self.conv2(out)
+        
+        out= self.layers(x)
             
         out = out * self.scale
         out = out + residual
         return out
         
 class ResnetBlock(torch.nn.Module):
-    def __init__(self, num_filter, kernel_size=3, stride=1, padding=1, bias=True, activation='prelu', norm='batch'):
+    def __init__(self, num_filter, kernel_size=3, stride=1, padding=1, bias=True, activation='prelu', norm='batch', pad_model=None):
         super(ResnetBlock, self).__init__()
-        self.conv1 = torch.nn.Conv2d(num_filter, num_filter, kernel_size, stride, padding, bias=bias)
-        self.conv2 = torch.nn.Conv2d(num_filter, num_filter, kernel_size, stride, padding, bias=bias)
 
         self.norm = norm
-        if self.norm == 'batch':
-            self.bn1 = torch.nn.BatchNorm2d(num_filter)
-            self.bn2 = torch.nn.BatchNorm2d(num_filter)
-        elif norm == 'instance':
-            self.bn1 = torch.nn.InstanceNorm2d(num_filter)
-            self.bn2 = torch.nn.InstanceNorm2d(num_filter)
+        self.pad_model = pad_model
+        if self.norm =='batch':
+            self.norm = torch.nn.BatchNorm2d(num_filter)
+        elif self.norm == 'instance':
+            self.norm = torch.nn.InstanceNorm2d(num_filter)
+        else:
+            self.norm = None
 
         self.activation = activation
         if self.activation == 'relu':
@@ -172,22 +183,24 @@ class ResnetBlock(torch.nn.Module):
             self.act = torch.nn.Tanh()
         elif self.activation == 'sigmoid':
             self.act = torch.nn.Sigmoid()
+        else:
+            self.act = None
 
+        if self.pad_model == None:   
+            self.conv1 = torch.nn.Conv2d(num_filter, num_filter, kernel_size, stride, padding, bias=bias)
+            self.conv2 = torch.nn.Conv2d(num_filter, num_filter, kernel_size, stride, padding, bias=bias)
+            self.padding = None
+        elif self.pad_model == 'reflection':
+            self.padding = nn.Sequential(nn.ReflectionPad2d(padding))
+            self.conv1 = torch.nn.Conv2d(num_filter, num_filter, kernel_size, stride, 0, bias=bias)
+            self.conv2 = torch.nn.Conv2d(num_filter, num_filter, kernel_size, stride, 0, bias=bias)
+
+        layers = filter(lambda x: x is not None, [self.padding, self.conv1, self.norm, self.act, self.padding, self.conv2, self.norm, self.act])
+        self.layers = nn.Sequential(*layers)
 
     def forward(self, x):
         residual = x
-        if self.norm is not None:
-            out = self.bn1(self.conv1(x))
-        else:
-            out = self.conv1(x)
-
-        if self.activation is not None:
-            out = self.act(out)
-
-        if self.norm is not None:
-            out = self.bn2(self.conv2(out))
-        else:
-            out = self.conv2(out)
-
+        out = x
+        out= self.layers(x)
         out = torch.add(out, residual)
         return out

@@ -3,14 +3,14 @@
 '''
 @Author: wjm
 @Date: 2020-06-13 9:56:40
-@LastEditTime: 2020-06-03 10:00:01
+@LastEditTime: 2020-07-16 16:38:49
 @Description: batch_size=16, patch_size=48, L1 loss, epoch=1000, lr=1e-4, decay=200, ADAM
 '''
 import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from model.base_net import ConvBlock, ResnetBlock_scale, Upsampler, MeanShift
+from model.base_net import *
 from torchvision.transforms import *
 
 class Net(nn.Module):
@@ -104,7 +104,7 @@ class MultisourceProjection(nn.Module):
         self.up_attention = CrossScaleAttention(channel=channel, scale = up_factor)
         self.down_attention = NonLocalAttention(channel=channel)
         self.upsample = nn.Sequential(*[nn.ConvTranspose2d(in_channel,in_channel,deconv_ksize,stride=stride,padding=padding),nn.PReLU()])
-        self.encoder = ResnetBlock_scale(in_channel, scale=1, activation='prelu', norm=None)
+        self.encoder = ResnetBlock(in_channel, scale=1, activation='prelu', norm=None)
     
     def forward(self,x):
 

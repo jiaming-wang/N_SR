@@ -3,14 +3,14 @@
 '''
 @Author: wjm
 @Date: 2019-10-22 09:46:46
-@LastEditTime: 2020-06-05 11:35:19
+@LastEditTime: 2020-07-16 16:36:51
 @Description: batch_size=16, patch_size=48, L1 loss, epoch=300, ADAM, decay=150, lr=1e-4
 '''
 import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from model.base_net import ConvBlock, ResnetBlock_scale, Upsampler, MeanShift
+from model.base_net import *
 from torchvision.transforms import *
 
 class Net(nn.Module):
@@ -26,7 +26,7 @@ class Net(nn.Module):
         self.head = ConvBlock(num_channels, base_filter, 3, 1, 1, activation='relu', norm=None)
 
         body = [
-            ResnetBlock_scale(base_filter, 0.1, 3, 1, 1, activation='relu', norm=None) for _ in range(n_resblocks)
+            ResnetBlock(base_filter, 3, 1, 1, 0.1, activation='relu', norm=None) for _ in range(n_resblocks)
         ]
 
         body.append(ConvBlock(base_filter, base_filter, 3, 1, 1, activation='relu', norm=None))

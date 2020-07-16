@@ -6,7 +6,7 @@
 # 
 
 name: Net
-algorithm: SRResNet #[RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
+algorithm: RCAN #[RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
 nEpochs: 1000
 gpu_mode: False
 gpus: [0, 1]
@@ -32,7 +32,7 @@ pretrain:
 
 data:
   upsacle:  4
-  batch_size: 16
+  batch_size: 1
   patch_size: 16
   data_augmentation: False                                                                                                                                                                                               
   n_colors: 3

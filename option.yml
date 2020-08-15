@@ -9,6 +9,7 @@ name: Net
 algorithm: RCAN #[RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
 nEpochs: 1000
 gpu_mode: False
+save_best: False
 gpus: [0, 1]
 threads: 8
 

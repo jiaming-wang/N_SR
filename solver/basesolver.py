@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:07:03
-@LastEditTime: 2020-07-13 16:45:30
+LastEditTime: 2020-08-16 01:38:15
 @Description: file content
 '''
 import os, torch, time
@@ -76,6 +76,6 @@ class BaseSolver:
             self.train()
             self.eval()
             self.save_checkpoint()
-            self.save_records()
+            # self.save_records()
             self.epoch += 1
         #self.logger.log('Training done.')

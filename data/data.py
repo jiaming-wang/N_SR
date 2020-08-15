@@ -3,12 +3,12 @@
 '''
 @Author: wjm
 @Date: 2020-02-16 19:22:41
-@LastEditTime: 2020-06-23 14:59:44
+LastEditTime: 2020-08-16 01:47:42
 @Description: file content
 '''
 from os.path import join
 from torchvision.transforms import Compose, ToTensor
-from .dataset import Data, Data_test, Data_eval, Data_patch
+from .dataset import Data, Data_test, Data_eval
 from torchvision import transforms
 import torch, h5py, numpy
 import torch.utils.data as data
@@ -35,12 +35,9 @@ class DatasetFromHdf5(data.Dataset):
         self.target = numpy.transpose(self.target, (0, 3, 1, 2))
 
     def __getitem__(self, index):
-        # self.data = numpy.transpose(self.data)
-        # self.target = numpy.transpose(self.target)
         return torch.from_numpy(self.data[index,:,:,:]).float(), torch.from_numpy(self.target[index,:,:,:]).float()
         
-    def __len__(self):
-        
+    def __len__(self):       
         return self.data.shape[0]
     
 def get_test_data(cfg, data_dir, upscale_factor):

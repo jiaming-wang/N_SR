@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-@LastEditTime: 2020-07-13 17:03:29
+LastEditTime: 2020-08-16 01:52:02
 @Description: file content
 '''
 import os, importlib, torch, shutil
@@ -178,18 +178,21 @@ class Solver(BaseSolver):
             os.mkdir(self.cfg['checkpoint'] + '/' + str(self.log_name))
         torch.save(self.ckp, os.path.join(self.cfg['checkpoint'] + '/' + str(self.log_name), 'latest.pth'))
 
-        if self.records['PSNR'] != [] and self.records['PSNR'][-1] == np.array(self.records['PSNR']).max():
-            shutil.copy(os.path.join(self.cfg['checkpoint'] + '/' + str(self.log_name), 'latest.pth'),
-                        os.path.join(self.cfg['checkpoint'] + '/' + str(self.log_name), 'best.pth'))
+        if self.cfg['save_best']:
+            if self.records['PSNR'] != [] and self.records['PSNR'][-1] == np.array(self.records['PSNR']).max():
+                shutil.copy(os.path.join(self.cfg['checkpoint'] + '/' + str(self.log_name), 'latest.pth'),
+                            os.path.join(self.cfg['checkpoint'] + '/' + str(self.log_name), 'best.pth'))
 
     def run(self):
         self.check_gpu()
-        self.save_checkpoint()
         if self.cfg['pretrain']['pretrained']:
             self.check_pretrained()
-        while self.epoch <= self.nEpochs:
-            self.train()
-            self.eval()
+        try:
+            while self.epoch <= self.nEpochs:
+                self.train()
+                self.eval()
+                self.save_checkpoint()
+                self.epoch += 1
+        except KeyboardInterrupt:
             self.save_checkpoint()
-            self.epoch += 1
         save_config(self.log_name, 'Training done.')

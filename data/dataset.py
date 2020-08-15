@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-23 14:57:22
-@LastEditTime: 2020-06-30 19:31:07
+LastEditTime: 2020-08-16 01:36:46
 @Description: file content
 '''
 import torch.utils.data as data
@@ -114,43 +114,6 @@ class Data(data.Dataset):
     def __len__(self):
         return len(self.image_filenames)
 
-class Data_patch(data.Dataset):
-    def __init__(self, image_dir, patch_size, upscale_factor, data_augmentation, normalize, transform=None):
-        super(Data_patch, self).__init__()
-        
-        self.image_filenames = [join(image_dir, x) for x in listdir(image_dir) if is_image_file(x)]
-        self.patch_size = patch_size
-        self.upscale_factor = upscale_factor
-        self.transform = transform
-        self.data_augmentation = data_augmentation
-        self.normalize = normalize
-
-    def __getitem__(self, index):
-    
-        target = load_img(self.image_filenames[index])
-        _, file = os.path.split(self.image_filenames[index])
-        target = target.crop((0, 0, target.size[0] // self.upscale_factor * self.upscale_factor, target.size[1] // self.upscale_factor * self.upscale_factor))
-        input = target.resize((int(target.size[0]/self.upscale_factor),int(target.size[1]/self.upscale_factor)), Image.BICUBIC)       
-        bicubic = rescale_img(input, self.upscale_factor)
-        input, target, bicubic, _ = get_patch(input,target,bicubic,self.patch_size, self.upscale_factor)
-        if self.data_augmentation:
-            input, target, bicubic, _ = augment(input, target, bicubic)
-        
-        if self.transform:
-            input = self.transform(input)
-            bicubic = self.transform(bicubic)
-            target = self.transform(target)
-
-        if self.normalize:
-            input = input * 2 - 1
-            bicubic = bicubic * 2 - 1
-            target = target * 2 - 1
-            
-        return input, target, bicubic
-
-    def __len__(self):
-        return len(self.image_filenames)
-
 class Data_test(data.Dataset):
     def __init__(self, image_dir, upscale_factor, normalize, transform=None):
         super(Data_test, self).__init__()
@@ -190,6 +153,7 @@ class Data_eval(data.Dataset):
         self.image_filenames = [join(image_dir, x) for x in listdir(image_dir) if is_image_file(x)]
         self.upscale_factor = upscale_factor
         self.transform = transform
+        self.normalize = normalize
 
     def __getitem__(self, index):
     

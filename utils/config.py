@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 21:48:53
-@LastEditTime: 2020-06-23 15:01:36
+LastEditTime: 2020-08-16 01:45:45
 @Description: file content
 '''
 
@@ -27,9 +27,6 @@ def get_config(cfg_path):
     return cfg
 
 def save_yml(info, cfg_path):
-    # if not os.path.exists(cfg_path):
-    #     path_str = str(cfg_path)
-    #     os.mkdir(os.path.join(cfg_path.split('/')[0], cfg_path.split('/')[1]))
     with open(cfg_path, 'w') as f:
         yaml.dump(info, f, Dumper=yaml.SafeDumper)
 

@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-02-17 22:19:38
-@LastEditTime: 2020-07-10 18:17:33
+LastEditTime: 2020-08-16 01:32:37
 @Description: file content
 '''
 from solver.basesolver import BaseSolver
@@ -84,9 +84,10 @@ class Testsolver(BaseSolver):
         
     def eval(self):
         self.model.eval()
+        avg_time= []
         for batch in self.data_loader:
             with torch.no_grad():
-                input, bicubic, name = Variable(batch[0]), Variable(batch[1]), Variable(batch[2]), batch[3]
+                input, bicubic, name = Variable(batch[0]), Variable(batch[1]), batch[2]
             if self.cuda:
                 input = input.cuda(self.gpu_ids[0])
                 bicubic = bicubic.cuda(self.gpu_ids[0])
@@ -96,8 +97,10 @@ class Testsolver(BaseSolver):
 
             t1 = time.time()
             print("===> Processing: %s || Timer: %.4f sec." % (name[0], (t1 - t0)))
+            avg_time.append(t1 - t0)
             self.save_img(bicubic.cpu().data, name[0][0:-4]+'_Bic.png')
             self.save_img(prediction.cpu().data, name[0][0:-4]+'.png')
+        print("===> AVG Timer: %.4f sec." % (np.mean(avg_time)))
 
     def save_img(self, img, img_name):
         save_img = img.squeeze().clamp(0, 1).numpy().transpose(1,2,0)

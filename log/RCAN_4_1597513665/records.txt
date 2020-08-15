@@ -1,0 +1,4 @@
+Train dataset has 400 images and 400 batches.
+Val dataset has 40 images and 40 batches.
+Model parameters: 15592379
+Training done.

@@ -10,7 +10,7 @@ There are some implements of image super-resolution methods with Pytorch.  <br>
 * SRCNN in srcnn.py ([Image Super-Resolution Using Deep Convolutional Networks](https://arxiv.org/abs/1501.00092)) (2014)
 
 ## Dependencies
-* Python 3.5.3
+* Python 3.5.3 +
 * Pytorch 1.1.0
 * tensorboardX
 

@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-LastEditTime: 2020-08-16 01:52:02
+LastEditTime: 2020-09-23 19:29:18
 @Description: file content
 '''
 import os, importlib, torch, shutil
@@ -19,6 +19,7 @@ from torch.utils.data import DataLoader
 import torch.nn as nn
 from tensorboardX import SummaryWriter
 from utils.config import save_yml
+import pytorch_colors as colors
 
 class Solver(BaseSolver):
     def __init__(self, cfg):
@@ -73,7 +74,11 @@ class Solver(BaseSolver):
                 self.model.train()
 
                 sr = self.model(lr)
-                
+
+                if self.cfg['data']['upsacle']:
+                    sr = colors.rgb_to_ycbcr(sr)
+                    hr = colors.rgb_to_ycbcr(hr)
+
                 loss = self.loss(sr, hr)
                 epoch_loss += loss.data
                 t.set_postfix_str("Batch loss {:.4f}".format(loss.item()))

@@ -53,4 +53,5 @@ schedule:
   weight_dency: 0
   gclip: 0.4
   loss: MSE #[MSE, L1, VGG22, VGG54]
+  use_YCbCr: False
 

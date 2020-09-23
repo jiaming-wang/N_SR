@@ -52,6 +52,6 @@ schedule:
   alpha: 0.9 #RMSprop alpha
   weight_dency: 0
   gclip: 0.4
-  loss: MSE #[MSE, L1, VGG22, VGG54]
+  loss: MSE #[MSE, L1, VGG22, VGG54, Cycle]
   use_YCbCr: False
 

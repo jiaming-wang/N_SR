@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-06-18 20:25:26
-@LastEditTime: 2020-07-02 22:28:22
+LastEditTime: 2020-09-23 19:46:30
 @Description: file content
 '''
 import numpy as np 
@@ -116,6 +116,6 @@ class compare_psnr_ssim:
 
 
 if __name__ == '__main__':
-    a = compare_psnr_ssim(4,r'C://Users//Wang//Desktop//test', 10)      
+    a = compare_psnr_ssim(4, r'C://Users//Wang//Desktop//test', 10)      
     a.run()
         

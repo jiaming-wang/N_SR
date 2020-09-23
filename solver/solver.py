@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-LastEditTime: 2020-09-23 19:29:18
+LastEditTime: 2020-09-23 19:45:24
 @Description: file content
 '''
 import os, importlib, torch, shutil
@@ -75,11 +75,13 @@ class Solver(BaseSolver):
 
                 sr = self.model(lr)
 
-                if self.cfg['data']['upsacle']:
-                    sr = colors.rgb_to_ycbcr(sr)
-                    hr = colors.rgb_to_ycbcr(hr)
+                if not self.cfg['data']['upsacle']:
+                    loss = self.loss(sr, hr)
+                else:
+                    sr_ycbcr = colors.rgb_to_ycbcr(sr)
+                    hr_ycbcr = colors.rgb_to_ycbcr(hr)
+                    loss = self.loss(sr_ycbcr, hr_ycbcr)
 
-                loss = self.loss(sr, hr)
                 epoch_loss += loss.data
                 t.set_postfix_str("Batch loss {:.4f}".format(loss.item()))
                 t.update()

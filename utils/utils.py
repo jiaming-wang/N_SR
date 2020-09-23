@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:12:52
-@LastEditTime: 2020-07-11 20:17:48
+LastEditTime: 2020-09-23 19:42:38
 @Description: file content
 '''
 import os, math, torch,cv2
@@ -34,6 +34,8 @@ def make_loss(loss_type):
         loss = VGG(loss_type[3:], rgb_range=255)
     elif loss_type == "VGG54":
         loss = VGG(loss_type[3:], rgb_range=255)
+    elif loss_type == 'Cycle':
+        loss = CycleLoss()
     else:
         raise ValueError
     return loss
@@ -54,10 +56,7 @@ class TVLoss(nn.Module):
         return self.TVLoss_weight*2*(h_tv/count_h+w_tv/count_w)/batch_size
 
 class CycleLoss(nn.Module):
-    def __init__(self, CycleLoss_weigth = 1, scale = 1/2, loss_type = 'L1'):
-        
-        self.CycleLoss_weigth = CycleLoss_weigth
-        self.scale = scale
+    def __init__(self, loss_type = 'L1'):
 
         if loss_type == "MSE":
             self.loss = nn.MSELoss()
@@ -66,8 +65,8 @@ class CycleLoss(nn.Module):
         else:
             raise ValueError
 
-    def forward(self, x_hr, x_lr):
-        down_x = F.interpolate(x_hr, scale_factor=self.scale, mode='bicubic')
+    def forward(self, scale = 1/4, x_hr, x_lr):
+        down_x = F.interpolate(x_hr, scale_factor=scale, mode='bicubic')
         return self.loss(down_x, x_lr)
         
 def get_path(subdir):

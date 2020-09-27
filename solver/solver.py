@@ -75,11 +75,11 @@ class Solver(BaseSolver):
 
                 sr = self.model(lr)
 
-                if not self.cfg['data']['upsacle']:
+                if not self.cfg['schedule']['use_YCbCr']:
                     loss = self.loss(sr, hr)
                 else:
-                    sr_ycbcr = colors.rgb_to_ycbcr(sr)
-                    hr_ycbcr = colors.rgb_to_ycbcr(hr)
+                    sr_ycbcr = colors.rgb_to_ycbcr(sr.detach()) / 255.0
+                    hr_ycbcr = colors.rgb_to_ycbcr(hr.detach()) / 255.0
                     loss = self.loss(sr_ycbcr, hr_ycbcr)
 
                 epoch_loss += loss.data

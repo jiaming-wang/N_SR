@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:12:52
-LastEditTime: 2020-09-23 19:42:38
+LastEditTime: 2020-09-27 17:10:05
 @Description: file content
 '''
 import os, math, torch,cv2
@@ -26,6 +26,7 @@ def maek_optimizer(opt_type, cfg, params):
     return optimizer
 
 def make_loss(loss_type):
+    # loss = {}
     if loss_type == "MSE":
         loss = nn.MSELoss()
     elif loss_type == "L1":
@@ -34,7 +35,7 @@ def make_loss(loss_type):
         loss = VGG(loss_type[3:], rgb_range=255)
     elif loss_type == "VGG54":
         loss = VGG(loss_type[3:], rgb_range=255)
-    elif loss_type == 'Cycle':
+    elif loss_type == "Cycle":
         loss = CycleLoss()
     else:
         raise ValueError

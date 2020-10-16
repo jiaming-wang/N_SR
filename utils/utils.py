@@ -66,7 +66,7 @@ class CycleLoss(nn.Module):
         else:
             raise ValueError
 
-    def forward(self, scale = 1/4, x_hr, x_lr):
+    def forward(self, x_hr, x_lr, scale = 1/4):
         down_x = F.interpolate(x_hr, scale_factor=scale, mode='bicubic')
         return self.loss(down_x, x_lr)
         

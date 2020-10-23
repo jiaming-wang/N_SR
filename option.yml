@@ -6,7 +6,7 @@
 # 
 
 name: Net
-algorithm: RCAN #[RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
+algorithm: RCAN #[CSNLA, SAN, RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
 nEpochs: 1000
 gpu_mode: False
 save_best: False
@@ -20,7 +20,7 @@ train_dataset: hr
 valid_dataset: valid
 
 test:
-  algorithm: SRResNet #[RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
+  algorithm: SRResNet #[CSNLA, SAN, RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
   type: test #[test, eval]
   data_dir: ./dataset
   test_dataset: valid
@@ -52,6 +52,6 @@ schedule:
   alpha: 0.9 #RMSprop alpha
   weight_dency: 0
   gclip: 0.4
-  loss: MSE #[MSE, L1, VGG22, VGG54, Cycle]
+  loss: L1 #[MSE, L1, VGG22, VGG54, Cycle]
   use_YCbCr: False
 

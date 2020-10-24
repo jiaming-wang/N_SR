@@ -1,7 +1,7 @@
 <!--
  * @Author: wjm
  * @Date: 2020-06-23 18:35:52
- * @LastEditTime: 2020-10-21 16:19:50
+ * @LastEditTime: 2020-10-24 09:57:01
  * @Description: file content
 -->
 # N_SR
@@ -34,9 +34,17 @@ Patch-based algoritnms.
 
 ## Experiments on FEI face dateset (without augmentation and pre-train)
 Image-based algoritnms.
-|Algorithms|Bicubic|EDSR_original|EDSR+b16k64|EDSR+b32k256|SRResNet without BN|RDN|DBPN|RCAN|
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-|PSNR | 36.38 | 39.81 | 39.85 | 40.05 | 40.04 | 39.90 | 40.14 | 40.03 |
+|Algorithms|PSNR|
+|:---:|:---:|
+|Bicubic|36.38| 
+|EDSR_original|39.81| 
+|EDSR+b16k64|39.85|
+|EDSR+b32k256|40.05|
+|SRResNet without BN|40.04| 
+|RDN|39.90| 
+|DBPN|40.14|
+|RCAN|40.03|
+|SAN|39.97|
 
 Patch-based algoritnms.
 |Algorithms|Bicubic|SRCNN_original|SRCNN|VDSR_original|

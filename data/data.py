@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-02-16 19:22:41
-LastEditTime: 2020-08-16 01:47:42
+LastEditTime: 2020-11-03 09:18:01
 @Description: file content
 '''
 from os.path import join
@@ -20,10 +20,8 @@ def transform():
     
 def get_data(cfg, data_dir, upscale_factor):
     data_dir = join(cfg['data_dir'], data_dir)
-    patch_size = cfg['data']['patch_size']
-    augmentation = cfg['data']['data_augmentation']
-    normalize = cfg['data']['normalize']
-    return Data(data_dir, patch_size, upscale_factor, augmentation, normalize, transform=transform())
+    cfg = cfg
+    return Data(data_dir, upscale_factor, cfg, transform=transform())
 
 class DatasetFromHdf5(data.Dataset):
     def __init__(self, file_path):
@@ -43,9 +41,9 @@ class DatasetFromHdf5(data.Dataset):
 def get_test_data(cfg, data_dir, upscale_factor):
     data_dir = join(cfg['test']['data_dir'], data_dir)
     normalize = cfg['data']['normalize']
-    return Data_test(data_dir, upscale_factor, normalize, transform=transform())
+    return Data_test(data_dir, upscale_factor, cfg, transform=transform())
 
 def get_eval_data(cfg, data_dir, upscale_factor):
     data_dir = join(cfg['test']['data_dir'], data_dir)
     normalize = cfg['data']['normalize']
-    return Data_eval(data_dir, upscale_factor, normalize, transform=transform())
+    return Data_eval(data_dir, upscale_factor, cfg, transform=transform())

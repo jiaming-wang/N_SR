@@ -39,6 +39,7 @@ data:
   n_colors: 3
   rgb_range: 255
   normalize : False
+  noise: 0
 
 schedule:
   lr: 1e-1

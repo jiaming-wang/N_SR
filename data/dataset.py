@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-23 14:57:22
-LastEditTime: 2020-08-16 01:36:46
+LastEditTime: 2020-11-03 09:25:14
 @Description: file content
 '''
 import torch.utils.data as data
@@ -13,6 +13,7 @@ from os import listdir
 from os.path import join
 from PIL import Image, ImageOps
 from random import randrange
+import torch.nn.functional as F
 
 def is_image_file(filename):
     return any(filename.endswith(extension) for extension in ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP',])
@@ -78,15 +79,16 @@ def augment(img_in, img_tar, img_bic, flip_h=True, rot=True):
     return img_in, img_tar, img_bic, info_aug
 
 class Data(data.Dataset):
-    def __init__(self, image_dir, patch_size, upscale_factor, data_augmentation, normalize, transform=None):
+    def __init__(self, image_dir, upscale_factor, cfg, transform=None):
         super(Data, self).__init__()
-        
+    
         self.image_filenames = [join(image_dir, x) for x in listdir(image_dir) if is_image_file(x)]
-        self.patch_size = patch_size
+        self.patch_size = cfg['data']['patch_size']
         self.upscale_factor = upscale_factor
         self.transform = transform
-        self.data_augmentation = data_augmentation
-        self.normalize = normalize
+        self.data_augmentation = cfg['data']['data_augmentation']
+        self.normalize = cfg['data']['normalize']
+        self.cfg = cfg
 
     def __getitem__(self, index):
     
@@ -96,6 +98,7 @@ class Data(data.Dataset):
         input = target.resize((int(target.size[0]/self.upscale_factor),int(target.size[1]/self.upscale_factor)), Image.BICUBIC)       
         bicubic = rescale_img(input, self.upscale_factor)
         input, target, bicubic, _ = get_patch(input,target,bicubic,self.patch_size, self.upscale_factor)
+        
         if self.data_augmentation:
             input, target, bicubic, _ = augment(input, target, bicubic)
         
@@ -103,6 +106,10 @@ class Data(data.Dataset):
             input = self.transform(input)
             bicubic = self.transform(bicubic)
             target = self.transform(target)
+
+        if self.cfg['data']['noise'] != 0:
+            noise = torch.randn(B,C,H,W).mul_(self.cfg['data']['noise']).float()
+            input = input + noise
 
         if self.normalize:
             input = input * 2 - 1
@@ -115,13 +122,14 @@ class Data(data.Dataset):
         return len(self.image_filenames)
 
 class Data_test(data.Dataset):
-    def __init__(self, image_dir, upscale_factor, normalize, transform=None):
+    def __init__(self, image_dir, upscale_factor, cfg, transform=None):
         super(Data_test, self).__init__()
         
         self.image_filenames = [join(image_dir, x) for x in listdir(image_dir) if is_image_file(x)]
         self.upscale_factor = upscale_factor
         self.transform = transform
-        self.normalize = normalize
+        self.normalize = cfg['data']['normalize']
+        self.cfg = cfg
 
     def __getitem__(self, index):
     
@@ -135,7 +143,11 @@ class Data_test(data.Dataset):
             input = self.transform(input)
             bicubic = self.transform(bicubic)
             target = self.transform(target)
-        
+
+        if self.cfg['data']['noise'] != 0:
+            noise = torch.randn(B,C,H,W).mul_(self.cfg['data']['noise']).float()
+            input = input + noise
+
         if self.normalize:
             input = input * 2 - 1
             bicubic = bicubic * 2 - 1
@@ -147,13 +159,13 @@ class Data_test(data.Dataset):
         return len(self.image_filenames)
 
 class Data_eval(data.Dataset):
-    def __init__(self, image_dir, upscale_factor, normalize, transform=None):
+    def __init__(self, image_dir, upscale_factor, cfg, transform=None):
         super(Data_eval, self).__init__()
         
         self.image_filenames = [join(image_dir, x) for x in listdir(image_dir) if is_image_file(x)]
         self.upscale_factor = upscale_factor
         self.transform = transform
-        self.normalize = normalize
+        self.normalize = cfg['data']['normalize']
 
     def __getitem__(self, index):
     
@@ -174,3 +186,34 @@ class Data_eval(data.Dataset):
 
     def __len__(self):
         return len(self.image_filenames)
+
+def DUF_downsample(x, scale=4):
+    """Downsamping with Gaussian kernel used in the DUF official code
+
+    Args:
+        x (Tensor, [B, T, C, H, W]): frames to be downsampled.
+        scale (int): downsampling factor: 2 | 3 | 4.
+    """
+
+    def gkern(kernlen=13, nsig=1.6):
+        import scipy.ndimage.filters as fi
+        inp = np.zeros((kernlen, kernlen))
+        # set element at the middle to one, a dirac delta
+        inp[kernlen // 2, kernlen // 2] = 1
+        # gaussian-smooth the dirac, resulting in a gaussian filter mask
+        return fi.gaussian_filter(inp, nsig)
+
+    B, T, C, H, W = x.size()
+    x = x.view(-1, 1, H, W)
+    pad_w, pad_h = 6 + scale * 2, 6 + scale * 2  # 6 is the pad of the gaussian filter
+    r_h, r_w = 0, 0
+    if scale == 3:
+        r_h = 3 - (H % 3)
+        r_w = 3 - (W % 3)
+    x = F.pad(x, [pad_w, pad_w + r_w, pad_h, pad_h + r_h], 'reflect')
+
+    gaussian_filter = torch.from_numpy(gkern(13, 0.4 * scale)).type_as(x).unsqueeze(0).unsqueeze(0)
+    x = F.conv2d(x, gaussian_filter, stride=scale)
+    x = x[:, :, 2:-2, 2:-2]
+    x = x.view(B, T, C, x.size(2), x.size(3))
+    return x

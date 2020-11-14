@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-LastEditTime: 2020-11-13 18:41:13
+LastEditTime: 2020-11-14 12:05:18
 @Description: file content
 '''
 import os, importlib, torch, shutil
@@ -76,11 +76,11 @@ class Solver(BaseSolver):
                 sr = self.model(lr)
 
                 if not self.cfg['schedule']['use_YCbCr']:
-                    loss = self.loss(sr, hr) / self.cfg['data']['batch_size']
+                    loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
                 else:
                     sr = colors.rgb_to_ycbcr(sr.detach()) / 255.0
                     hr = colors.rgb_to_ycbcr(hr.detach()) / 255.0
-                    loss = self.loss(sr, hr) / self.cfg['data']['batch_size']
+                    loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
 
                 epoch_loss += loss.data
                 t.set_postfix_str("Batch loss {:.4f}".format(loss.item()))

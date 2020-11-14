@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:12:52
-LastEditTime: 2020-11-13 18:39:58
+LastEditTime: 2020-11-14 12:28:31
 @Description: file content
 '''
 import os, math, torch,cv2
@@ -60,9 +60,9 @@ class CycleLoss(nn.Module):
     def __init__(self, loss_type = 'L1'):
 
         if loss_type == "MSE":
-            self.loss = nn.MSELoss()
+            self.loss = nn.MSELoss(reduction='sum')
         elif loss_type == "L1":
-            self.loss = nn.L1Loss()
+            self.loss = nn.L1Loss(reduction='sum')
         else:
             raise ValueError
 

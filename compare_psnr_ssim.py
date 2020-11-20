@@ -3,13 +3,13 @@
 '''
 @Author: wjm
 @Date: 2020-06-18 20:25:26
-LastEditTime: 2020-09-23 19:46:30
+LastEditTime: 2020-11-20 09:38:21
 @Description: file content
 '''
 import numpy as np 
 import glob, os, math, h5py, cv2
 from scipy import misc
-from utils.iqa.vifp import vifp_mscale
+# from utils.iqa.vifp import vifp_mscale
 
 class compare_psnr_ssim:
     
@@ -54,15 +54,15 @@ class compare_psnr_ssim:
             self.ssim_lr.append(self.ssim(self.bic, self.hr))
             self.ssim_sr.append(self.ssim(self.sr, self.hr))
             
-            self.vif_lr.append(vifp_mscale(self.bic, self.hr))
-            self.vif_sr.append(vifp_mscale(self.sr, self.hr))
+            # self.vif_lr.append(vifp_mscale(self.bic, self.hr))
+            # self.vif_sr.append(vifp_mscale(self.sr, self.hr))
 
         print('The average psnr of LR : ' + str(np.mean(self.psnr_lr)))
         print('The average psnr of SR : ' + str(np.mean(self.psnr_sr)))
         print('The average ssim of LR : ' + str(np.mean(self.ssim_lr)))
         print('The average ssim of SR : ' + str(np.mean(self.ssim_sr)))
-        print('The average vif of LR : ' + str(np.mean(self.vif_lr)))
-        print('The average vif of SR : ' + str(np.mean(self.vif_sr)))
+        # print('The average vif of LR : ' + str(np.mean(self.vif_lr)))
+        # print('The average vif of SR : ' + str(np.mean(self.vif_sr)))
 
     
     def psnr(self, lr, hr):

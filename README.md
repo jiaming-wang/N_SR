@@ -1,7 +1,7 @@
 <!--
  * @Author: wjm
  * @Date: 2020-06-23 18:35:52
- * @LastEditTime: 2020-10-24 09:57:01
+ * @LastEditTime: 2020-11-25 16:40:19
  * @Description: file content
 -->
 # N_SR
@@ -21,6 +21,7 @@ There are some implements of image super-resolution methods with Pytorch.  <br>
 * Python 3.5.3 +
 * Pytorch 1.1.0
 * tensorboardX
+* [pytorch-colors](https://github.com/jorge-pessoa/pytorch-colors)
 
 ### Getting started
 Image-based algoritnms.

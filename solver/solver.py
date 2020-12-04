@@ -3,12 +3,12 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-LastEditTime: 2020-11-14 12:05:18
+LastEditTime: 2020-12-04 11:20:29
 @Description: file content
 '''
 import os, importlib, torch, shutil
 from solver.basesolver import BaseSolver
-from utils.utils import maek_optimizer, make_loss, calculate_psnr, calculate_ssim, save_config, save_net_config
+from utils.utils import maek_optimizer, make_loss, calculate_psnr, calculate_ssim, save_config, save_net_config, save_net_py
 import torch.backends.cudnn as cudnn
 from tqdm import tqdm
 import numpy as np
@@ -53,6 +53,7 @@ class Solver(BaseSolver):
         # save log
         self.writer = SummaryWriter('log/' + str(self.log_name))
         save_net_config(self.log_name, self.model)
+        save_net_py(self.log_name, net_name)
         save_yml(cfg, os.path.join('log/' + str(self.log_name), 'config.yml'))
         save_config(self.log_name, 'Train dataset has {} images and {} batches.'.format(len(self.train_dataset), len(self.train_loader)))
         save_config(self.log_name, 'Val dataset has {} images and {} batches.'.format(len(self.val_dataset), len(self.val_loader)))

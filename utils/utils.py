@@ -3,10 +3,10 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:12:52
-LastEditTime: 2020-11-14 12:28:31
+LastEditTime: 2020-12-04 11:19:43
 @Description: file content
 '''
-import os, math, torch,cv2
+import os, math, torch, cv2, shutil
 import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
@@ -83,6 +83,10 @@ def save_net_config(time, log):
     log_file = open(get_path('./log/' + str(time) + '/net.txt'), open_type)
     log_file.write(str(log) + '\n')
 
+def save_net_py(time, py):
+    py_path = os.path.join('./model', py+'.py')
+    shutil.copyfile(py_path, os.path.join('./log/'+ str(time), py+'.py'))
+    
 def draw_curve_and_save(x, y, title, filename, precision):
     if not isinstance(x, np.ndarray):
         x = np.array(x).astype(np.int32)

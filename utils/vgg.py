@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-22 09:40:25
-@LastEditTime: 2019-10-22 09:43:23
+LastEditTime: 2020-12-26 19:47:32
 @Description: file content
 '''
 import torch
@@ -30,7 +30,7 @@ class VGG(nn.Module):
 
     def forward(self, sr, hr):
         def _forward(x):
-            x = self.sub_mean(x)
+            # x = self.sub_mean(x)
             x = self.vgg(x)
             return x
         

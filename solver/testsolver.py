@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-02-17 22:19:38
-LastEditTime: 2020-08-16 01:32:37
+LastEditTime: 2021-01-15 22:21:02
 @Description: file content
 '''
 from solver.basesolver import BaseSolver
@@ -13,6 +13,8 @@ from data.data import *
 from torch.utils.data import DataLoader
 from torch.autograd import Variable 
 import numpy as np
+import matplotlib.pyplot as plt
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 class Testsolver(BaseSolver):
     def __init__(self, cfg):
@@ -28,7 +30,14 @@ class Testsolver(BaseSolver):
                 scale_factor=self.cfg['data']['upsacle'], 
                 args = self.cfg
         )
-
+        self.fmap_block = list()
+        self.input_block = list()
+    
+    ## define hook
+    def forward_hook(self, module, data_input, data_output):
+        self.fmap_block.append(data_output)
+        self.input_block.append(data_input)
+        
     def check(self):
         self.cuda = self.cfg['gpu_mode']
         torch.manual_seed(self.cfg['seed'])
@@ -65,15 +74,27 @@ class Testsolver(BaseSolver):
 
             if self.cfg['algorithm'] == 'VDSR' or self.cfg['algorithm'] == 'SRCNN':
                 input = bicubic
+            
+            ## hook
+            # hadle_hook = self.model.res_b1.register_forward_hook(self.forward_hook)
 
             t0 = time.time()
-            prediction = self.model(input)   
+            prediction = self.model(input)
             t1 = time.time()
 
             if self.cfg['data']['normalize'] :
                 target = (target+1) /2
                 prediction = (prediction+1) /2
                 bicubic = (bicubic+1) /2
+
+            ## remove hook, save feature maps
+            # hadle_hook.remove()
+            # self.fmap_block = self.fmap_block[0].squeeze().detach().cpu()
+            # self.fmap_block = (self.fmap_block*255).numpy().astype(np.uint8)
+            # for i in range(0, self.fmap_block[0].shape[1]-1):
+            #     plt.imsave('./{}.png'.format(str(i)), self.fmap_block[i,:,:], cmap = plt.cm.jet)
+            # self.fmap_block = list()
+            # self.input_block = list()
 
             print("===> Processing: %s || Timer: %.4f sec." % (name[0], (t1 - t0)))
             avg_time.append(t1 - t0)

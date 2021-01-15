@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-LastEditTime: 2020-12-04 11:20:29
+LastEditTime: 2021-01-15 21:41:20
 @Description: file content
 '''
 import os, importlib, torch, shutil
@@ -19,7 +19,9 @@ from torch.utils.data import DataLoader
 import torch.nn as nn
 from tensorboardX import SummaryWriter
 from utils.config import save_yml
-import pytorch_colors as colors
+# import pytorch_colors as colors
+from torchsummary import summary
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 class Solver(BaseSolver):
     def __init__(self, cfg):
@@ -52,6 +54,7 @@ class Solver(BaseSolver):
         self.log_name = self.cfg['algorithm'] + '_' + str(self.cfg['data']['upsacle']) + '_' + str(self.timestamp)
         # save log
         self.writer = SummaryWriter('log/' + str(self.log_name))
+        summary(self.model, (3, self.cfg['data']['patch_size'], self.cfg['data']['patch_size']))
         save_net_config(self.log_name, self.model)
         save_net_py(self.log_name, net_name)
         save_yml(cfg, os.path.join('log/' + str(self.log_name), 'config.yml'))
@@ -79,8 +82,8 @@ class Solver(BaseSolver):
                 if not self.cfg['schedule']['use_YCbCr']:
                     loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
                 else:
-                    sr = colors.rgb_to_ycbcr(sr.detach()) / 255.0
-                    hr = colors.rgb_to_ycbcr(hr.detach()) / 255.0
+                    # sr = colors.rgb_to_ycbcr(sr.detach()) / 255.0
+                    # hr = colors.rgb_to_ycbcr(hr.detach()) / 255.0
                     loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
 
                 epoch_loss += loss.data

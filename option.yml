@@ -6,7 +6,7 @@
 # 
 
 name: Net
-algorithm: RCAN #[CSNLA, SAN, RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
+algorithm: SRResNet #[CSNLA, SAN, RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
 nEpochs: 1000
 gpu_mode: False
 save_best: False
@@ -24,7 +24,7 @@ test:
   type: test #[test, eval]
   data_dir: ./dataset
   test_dataset: valid
-  model: 1592905702/best.pth
+  model: SRResNet_4_1610718108/latest.pth
 
 pretrain:
   pretrained: False

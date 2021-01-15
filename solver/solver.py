@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-LastEditTime: 2021-01-15 22:23:10
+LastEditTime: 2021-01-15 22:27:07
 @Description: file content
 '''
 import os, importlib, torch, shutil
@@ -53,7 +53,7 @@ class Solver(BaseSolver):
         self.log_name = self.cfg['algorithm'] + '_' + str(self.cfg['data']['upsacle']) + '_' + str(self.timestamp)
         # save log
         self.writer = SummaryWriter('log/' + str(self.log_name))
-        summary(self.model, (3, self.cfg['data']['patch_size'], self.cfg['data']['patch_size']))
+        summary(self.model, (3, self.cfg['data']['patch_size'], self.cfg['data']['patch_size']), device='cpu')
         save_net_config(self.log_name, self.model)
         save_net_py(self.log_name, net_name)
         save_yml(cfg, os.path.join('log/' + str(self.log_name), 'config.yml'))

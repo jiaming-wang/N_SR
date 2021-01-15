@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-02-17 22:19:38
-LastEditTime: 2021-01-15 22:21:02
+LastEditTime: 2021-01-15 22:37:08
 @Description: file content
 '''
 from solver.basesolver import BaseSolver
@@ -76,7 +76,10 @@ class Testsolver(BaseSolver):
                 input = bicubic
             
             ## hook
-            # hadle_hook = self.model.res_b1.register_forward_hook(self.forward_hook)
+            # if self.cuda:
+            #     hadle_hook = self.model.module.res_b1.register_forward_hook(self.forward_hook)
+            # else:
+            #     hadle_hook = self.model.res_b1.register_forward_hook(self.forward_hook)
 
             t0 = time.time()
             prediction = self.model(input)

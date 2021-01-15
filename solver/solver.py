@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-LastEditTime: 2021-01-15 21:41:20
+LastEditTime: 2021-01-15 22:23:10
 @Description: file content
 '''
 import os, importlib, torch, shutil
@@ -19,7 +19,6 @@ from torch.utils.data import DataLoader
 import torch.nn as nn
 from tensorboardX import SummaryWriter
 from utils.config import save_yml
-# import pytorch_colors as colors
 from torchsummary import summary
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
@@ -82,8 +81,9 @@ class Solver(BaseSolver):
                 if not self.cfg['schedule']['use_YCbCr']:
                     loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
                 else:
-                    # sr = colors.rgb_to_ycbcr(sr.detach()) / 255.0
-                    # hr = colors.rgb_to_ycbcr(hr.detach()) / 255.0
+                    import pytorch_colors as colors
+                    sr = colors.rgb_to_ycbcr(sr.detach()) / 255.0
+                    hr = colors.rgb_to_ycbcr(hr.detach()) / 255.0
                     loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
 
                 epoch_loss += loss.data

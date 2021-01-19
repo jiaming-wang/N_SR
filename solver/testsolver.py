@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-02-17 22:19:38
-LastEditTime: 2021-01-15 22:37:08
+LastEditTime: 2021-01-19 17:11:54
 @Description: file content
 '''
 from solver.basesolver import BaseSolver
@@ -64,9 +64,8 @@ class Testsolver(BaseSolver):
     def test(self):
         self.model.eval()
         avg_time= []
-        for batch in self.data_loader:
-            with torch.no_grad():
-                input, target, bicubic, name = Variable(batch[0]), Variable(batch[1]), Variable(batch[2]), batch[3]
+        for batch in self.data_loader:          
+            input, target, bicubic, name = Variable(batch[0]), Variable(batch[1]), Variable(batch[2]), batch[3]
             if self.cuda:
                 input = input.cuda(self.gpu_ids[0])
                 target = target.cuda(self.gpu_ids[0])
@@ -76,13 +75,14 @@ class Testsolver(BaseSolver):
                 input = bicubic
             
             ## hook
-            # if self.cuda:
-            #     hadle_hook = self.model.module.res_b1.register_forward_hook(self.forward_hook)
-            # else:
-            #     hadle_hook = self.model.res_b1.register_forward_hook(self.forward_hook)
+            if self.cuda:
+                hadle_hook = self.model.module.res_b1.register_forward_hook(self.forward_hook)
+            else:
+                hadle_hook = self.model.res_b1.register_forward_hook(self.forward_hook)
 
             t0 = time.time()
-            prediction = self.model(input)
+            with torch.no_grad():
+                prediction = self.model(input)
             t1 = time.time()
 
             if self.cfg['data']['normalize'] :
@@ -91,13 +91,13 @@ class Testsolver(BaseSolver):
                 bicubic = (bicubic+1) /2
 
             ## remove hook, save feature maps
-            # hadle_hook.remove()
-            # self.fmap_block = self.fmap_block[0].squeeze().detach().cpu()
-            # self.fmap_block = (self.fmap_block*255).numpy().astype(np.uint8)
-            # for i in range(0, self.fmap_block[0].shape[1]-1):
-            #     plt.imsave('./{}.png'.format(str(i)), self.fmap_block[i,:,:], cmap = plt.cm.jet)
-            # self.fmap_block = list()
-            # self.input_block = list()
+            hadle_hook.remove()
+            self.fmap_block = self.fmap_block[0].squeeze().detach().cpu()
+            self.fmap_block = (self.fmap_block*255).numpy().astype(np.uint8)
+            for i in range(0, self.fmap_block[0].shape[1]-1):
+                plt.imsave('./1/{}.png'.format(str(i)), self.fmap_block[i,:,:], cmap = plt.cm.jet)
+            self.fmap_block = list()
+            self.input_block = list()
 
             print("===> Processing: %s || Timer: %.4f sec." % (name[0], (t1 - t0)))
             avg_time.append(t1 - t0)
@@ -110,15 +110,15 @@ class Testsolver(BaseSolver):
         self.model.eval()
         avg_time= []
         for batch in self.data_loader:
-            with torch.no_grad():
-                input, bicubic, name = Variable(batch[0]), Variable(batch[1]), batch[2]
+            
+            input, bicubic, name = Variable(batch[0]), Variable(batch[1]), batch[2]
             if self.cuda:
                 input = input.cuda(self.gpu_ids[0])
                 bicubic = bicubic.cuda(self.gpu_ids[0])
 
             t0 = time.time()
-            prediction = self.model(input)
-
+            with torch.no_grad():   
+                prediction = self.model(input)
             t1 = time.time()
             print("===> Processing: %s || Timer: %.4f sec." % (name[0], (t1 - t0)))
             avg_time.append(t1 - t0)

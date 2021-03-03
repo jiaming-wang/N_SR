@@ -75,10 +75,10 @@ class Testsolver(BaseSolver):
                 input = bicubic
             
             ## hook
-            if self.cuda:
-                hadle_hook = self.model.module.res_b1.register_forward_hook(self.forward_hook)
-            else:
-                hadle_hook = self.model.res_b1.register_forward_hook(self.forward_hook)
+            # if self.cuda:
+            #     hadle_hook = self.model.module.res_b1.register_forward_hook(self.forward_hook)
+            # else:
+            #     hadle_hook = self.model.res_b1.register_forward_hook(self.forward_hook)
 
             t0 = time.time()
             with torch.no_grad():
@@ -91,13 +91,13 @@ class Testsolver(BaseSolver):
                 bicubic = (bicubic+1) /2
 
             ## remove hook, save feature maps
-            hadle_hook.remove()
-            self.fmap_block = self.fmap_block[0].squeeze().detach().cpu()
-            self.fmap_block = (self.fmap_block*255).numpy().astype(np.uint8)
-            for i in range(0, self.fmap_block[0].shape[1]-1):
-                plt.imsave('./1/{}.png'.format(str(i)), self.fmap_block[i,:,:], cmap = plt.cm.jet)
-            self.fmap_block = list()
-            self.input_block = list()
+            # hadle_hook.remove()
+            # self.fmap_block = self.fmap_block[0].squeeze().detach().cpu()
+            # self.fmap_block = (self.fmap_block*255).numpy().astype(np.uint8)
+            # for i in range(0, self.fmap_block[0].shape[1]-1):
+            #     plt.imsave('./1/{}.png'.format(str(i)), self.fmap_block[i,:,:], cmap = plt.cm.jet)
+            # self.fmap_block = list()
+            # self.input_block = list()
 
             print("===> Processing: %s || Timer: %.4f sec." % (name[0], (t1 - t0)))
             avg_time.append(t1 - t0)

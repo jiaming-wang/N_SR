@@ -3,7 +3,7 @@
 '''
 Author: wjm
 Date: 2021-03-03 11:02:10
-LastEditTime: 2021-03-03 11:19:02
+LastEditTime: 2021-03-03 11:38:34
 Description: batch_size=16, patch_size=48, L1 loss, epoch=250, lr=1e-5, decay=250, ADAM
 '''
 
@@ -31,7 +31,7 @@ class Net(nn.Module):
         # self.sub_mean = common.MeanShift(args.rgb_range, rgb_mean, rgb_std)
         
         # define head module
-        head = ConvBlock(num_channels, base_filter, 3, 1, 1, activation='relu', norm=None)
+        self.head = ConvBlock(num_channels, base_filter, 3, 1, 1, activation='relu', norm=None)
 
         # define body module
         body = [
@@ -46,7 +46,7 @@ class Net(nn.Module):
 
         # self.add_mean = common.MeanShift(args.rgb_range, rgb_mean, rgb_std, 1)
 
-        self.head = nn.Sequential(*head)
+        # self.head = nn.Sequential(*head)
         self.body = nn.Sequential(*body)
         self.csa = CSAM_Module(base_filter)
         self.la = LAM_Module(base_filter)

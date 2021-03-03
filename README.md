@@ -1,12 +1,13 @@
 <!--
  * @Author: wjm
  * @Date: 2020-06-23 18:35:52
- * @LastEditTime: 2020-11-25 16:40:19
+ * @LastEditTime: 2021-03-03 11:20:34
  * @Description: file content
 -->
 # N_SR
  
 There are some implements of image super-resolution methods with Pytorch.  <br>
+* HAN in han.py ([Single Image Super-Resolution via a Holistic Attention Network](hhttps://arxiv.org/pdf/2008.08767.pdf)) (2020)
 * SAN in san.py ([Second-order Attention Network for Single Image Super-Resolution](http://openaccess.thecvf.com/content_CVPR_2019/papers/Dai_Second-Order_Attention_Network_for_Single_Image_Super-Resolution_CVPR_2019_paper.pdf)) (2020)
 * CSNLA in csnla.py ([Image Super-Resolution with Cross-Scale Non-Local Attention and Exhaustive Self-Exemplars Mining](https://arxiv.org/abs/2006.01424)) (2020)
 * DRN in drn.py ([Closed-loop Matters: Dual Regression Networks for Single Image Super-Resolution](https://arxiv.org/pdf/2003.07018.pdf)) (2020)

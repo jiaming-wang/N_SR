@@ -3,7 +3,7 @@
 '''
 Author: wjm
 Date: 2021-03-03 20:40:27
-LastEditTime: 2021-03-03 21:06:59
+LastEditTime: 2021-03-03 23:00:43
 Description: file content
 '''
 import torch, cv2, os, sys, numpy as np, matplotlib.pyplot as plt
@@ -20,12 +20,15 @@ from SaliencyModel.BackProp import saliency_map_PG as saliency_map
 from SaliencyModel.BackProp import GaussianBlurPath
 from SaliencyModel.utils import grad_norm, IG_baseline, interpolation, isotropic_gaussian_kernel
 
-
+## The code needs the support of GPU. 
+## method_name and checkpoint_path
 model = load_model('HAN', './best.pth')  # You can Change the model name to load different models
-window_size = 16  # Define windoes_size of D
-img_lr, img_hr = prepare_images('./1.png')  # Change this image name
-w = 110  # The x coordinate of your select patch, 125 as an example
-h = 150  # The y coordinate of your select patch, 160 as an example
+## Define windoes_size of D
+window_size = 16
+## input image
+img_lr, img_hr = prepare_images('./1.png')
+w = 110  # The x coordinate of your select patch
+h = 150  # The y coordinate of your select patch
 
 tensor_lr = PIL2Tensor(img_lr)[:3] ; tensor_hr = PIL2Tensor(img_hr)[:3]
 cv2_lr = np.moveaxis(tensor_lr.numpy(), 0, 2) ; cv2_hr = np.moveaxis(tensor_hr.numpy(), 0, 2)

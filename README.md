@@ -1,7 +1,7 @@
 <!--
  * @Author: wjm
  * @Date: 2020-06-23 18:35:52
- * @LastEditTime: 2021-03-31 10:45:00
+ * @LastEditTime: 2021-03-31 22:03:59
  * @Description: file content
 -->
 # N_SR
@@ -36,6 +36,10 @@ Patch-based algoritnms.
 * Test: `python test.py`. More details in `option.py`.</br>
 
 * tensorborad --logdir ./log </br>
+
+Plot the LAM map
+* `python ./LAM/LAM_main.py`. ([Interpreting Super-Resolution Networks with Local Attribution Maps](https://arxiv.org/abs/2011.11036))</br>
+
 ![alt tag](log.png?raw=true "Title")
 
 ## Experiments on FEI face dateset (without augmentation and pre-train)

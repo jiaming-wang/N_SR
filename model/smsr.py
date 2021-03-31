@@ -3,8 +3,8 @@
 '''
 Author: wjm
 Date: 2021-03-31 09:50:40
-LastEditTime: 2021-03-31 10:27:03
-Description: file content
+LastEditTime: 2021-03-31 21:53:59
+Description: atch_size=16, patch_size=48, L1 loss, epoch=1000, lr=2e-4, decay=200, ADAM
 '''
 
 from model.base_net import *

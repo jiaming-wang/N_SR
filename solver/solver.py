@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-LastEditTime: 2021-03-31 10:30:34
+LastEditTime: 2021-03-31 21:55:08
 @Description: file content
 '''
 import os, importlib, torch, shutil
@@ -125,7 +125,10 @@ class Solver(BaseSolver):
                     lr, hr = lr.cuda(), hr.cuda()
                 self.model.eval()
                 with torch.no_grad():
-                    sr = self.model(lr)
+                    if self.cfg['algorithm'] == 'SMSR':
+                        sr, sparsity = self.model(lr)
+                    else:
+                        sr = self.model(lr)
                     loss = self.loss(sr, hr)
 
                 batch_psnr, batch_ssim = [], []

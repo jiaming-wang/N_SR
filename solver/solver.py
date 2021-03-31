@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-LastEditTime: 2021-01-15 22:27:07
+LastEditTime: 2021-03-31 10:30:34
 @Description: file content
 '''
 import os, importlib, torch, shutil
@@ -53,7 +53,8 @@ class Solver(BaseSolver):
         self.log_name = self.cfg['algorithm'] + '_' + str(self.cfg['data']['upsacle']) + '_' + str(self.timestamp)
         # save log
         self.writer = SummaryWriter('log/' + str(self.log_name))
-        summary(self.model, (3, self.cfg['data']['patch_size'], self.cfg['data']['patch_size']), device='cpu')
+        if not self.cfg['algorithm'] == 'SMSR':
+            summary(self.model, (3, self.cfg['data']['patch_size'], self.cfg['data']['patch_size']), device='cpu')
         save_net_config(self.log_name, self.model)
         save_net_py(self.log_name, net_name)
         save_yml(cfg, os.path.join('log/' + str(self.log_name), 'config.yml'))
@@ -76,15 +77,25 @@ class Solver(BaseSolver):
                 self.optimizer.zero_grad()               
                 self.model.train()
 
-                sr = self.model(lr)
+                if self.cfg['algorithm'] == 'SMSR':
+                    sr, sparsity = self.model(lr)
+                    loss_sparsity = sparsity.mean()
+                    lambda0 = 0.1
+                    lambda_sparsity = min((self.epoch - 1) / 50, 1) * lambda0
+                    loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
+                    epoch_loss += loss.data + lambda_sparsity * loss_sparsity
+                else: 
+                    sr = self.model(lr)
+                    loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
+                    epoch_loss += loss.data
 
-                if not self.cfg['schedule']['use_YCbCr']:
-                    loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
-                else:
-                    import pytorch_colors as colors
-                    sr = colors.rgb_to_ycbcr(sr.detach()) / 255.0
-                    hr = colors.rgb_to_ycbcr(hr.detach()) / 255.0
-                    loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
+                # if not self.cfg['schedule']['use_YCbCr']:
+                #     loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
+                # else:
+                #     import pytorch_colors as colors
+                #     sr = colors.rgb_to_ycbcr(sr.detach()) / 255.0
+                #     hr = colors.rgb_to_ycbcr(hr.detach()) / 255.0
+                #     loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
 
                 epoch_loss += loss.data
                 t.set_postfix_str("Batch loss {:.4f}".format(loss.item()))

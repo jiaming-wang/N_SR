@@ -3,7 +3,7 @@
 '''
 Author: wjm
 Date: 2020-10-20 16:40:30
-LastEditTime: 2020-10-20 18:39:15
+LastEditTime: 2021-03-31 09:55:13
 @Description: batch_size=16, patch_size=48, L1 loss, lr=1e-4, epoch=500, ADAM, decay=150, n_feats = 128, depth = 12
 '''
 import os

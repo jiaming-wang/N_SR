@@ -1,12 +1,13 @@
 <!--
  * @Author: wjm
  * @Date: 2020-06-23 18:35:52
- * @LastEditTime: 2021-03-03 11:35:55
+ * @LastEditTime: 2021-03-31 10:28:31
  * @Description: file content
 -->
 # N_SR
  
 There are some implements of image super-resolution methods with Pytorch.  <br>
+* SMSR in SMSR.py ([Learning Sparse Masks for Efficient Image Super-Resolution](https://arxiv.org/pdf/2006.09603.pdf)) (2021)
 * HAN in han.py ([Single Image Super-Resolution via a Holistic Attention Network](https://arxiv.org/pdf/2008.08767.pdf)) (2020)
 * SAN in san.py ([Second-order Attention Network for Single Image Super-Resolution](http://openaccess.thecvf.com/content_CVPR_2019/papers/Dai_Second-Order_Attention_Network_for_Single_Image_Super-Resolution_CVPR_2019_paper.pdf)) (2020)
 * CSNLA in csnla.py ([Image Super-Resolution with Cross-Scale Non-Local Attention and Exhaustive Self-Exemplars Mining](https://arxiv.org/abs/2006.01424)) (2020)
@@ -33,6 +34,8 @@ Patch-based algoritnms.
 * Image to patch:`python image_to_patch.py`. </br>
 * Train: `python main.py`. </br>
 * Test: `python test.py`. More details in `option.py`.</br>
+
+* tensorborad --logdir ./log
 
 ## Experiments on FEI face dateset (without augmentation and pre-train)
 Image-based algoritnms.

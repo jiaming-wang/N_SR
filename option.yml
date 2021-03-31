@@ -6,7 +6,7 @@
 # 
 
 name: Net
-algorithm: HAN #[CSNLA, SAN, RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
+algorithm: SMSR #[SMSR, HAN, CSNLA, SAN, RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
 nEpochs: 250
 gpu_mode: False
 save_best: False
@@ -21,7 +21,7 @@ train_dataset: hr
 valid_dataset: valid
 
 test:
-  algorithm: SRResNet #[CSNLA, SAN, RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
+  algorithm: SRResNet #[SMSR, HAN, CSNLA, SAN, RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
   type: test #[test, eval]
   data_dir: ./dataset
   test_dataset: valid

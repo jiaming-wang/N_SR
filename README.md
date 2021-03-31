@@ -1,7 +1,7 @@
 <!--
  * @Author: wjm
  * @Date: 2020-06-23 18:35:52
- * @LastEditTime: 2021-03-31 10:44:32
+ * @LastEditTime: 2021-03-31 10:45:00
  * @Description: file content
 -->
 # N_SR
@@ -35,7 +35,7 @@ Patch-based algoritnms.
 * Train: `python main.py`. </br>
 * Test: `python test.py`. More details in `option.py`.</br>
 
-* tensorborad --logdir ./log
+* tensorborad --logdir ./log </br>
 ![alt tag](log.png?raw=true "Title")
 
 ## Experiments on FEI face dateset (without augmentation and pre-train)

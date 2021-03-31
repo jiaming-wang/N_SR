@@ -201,8 +201,9 @@ class Solver(BaseSolver):
         try:
             while self.epoch <= self.nEpochs:
                 self.train()
-                self.eval()
-                self.save_checkpoint()
+                if not self.cfg['debug']:
+                    self.eval()
+                    self.save_checkpoint()
                 self.epoch += 1
         except KeyboardInterrupt:
             self.save_checkpoint()

@@ -10,6 +10,7 @@ algorithm: HAN #[CSNLA, SAN, RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
 nEpochs: 250
 gpu_mode: False
 save_best: False
+debug: False
 gpus: [0, 1]
 threads: 8
 

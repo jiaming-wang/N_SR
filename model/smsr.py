@@ -271,6 +271,7 @@ class SMB(nn.Module):
             return out, ch_mask
 
         if os.path.split(sys.argv[0])[1] == 'test.py':
+            self._prepare()
             self.spa_mask = x[1]
 
             # generate indices

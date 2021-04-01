@@ -56,6 +56,7 @@ Image-based algoritnms.
 |RCAN|40.03|
 |SAN|39.97|
 |HAN|40.04|
+|SMSR|39.86|
 
 Patch-based algoritnms.
 |Algorithms|Bicubic|SRCNN_original|SRCNN|VDSR_original|

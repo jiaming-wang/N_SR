@@ -34,7 +34,7 @@ pretrain:
 
 data:
   upsacle:  4
-  batch_size: 16
+  batch_size: 1
   patch_size: 48
   data_augmentation: False                                                                                                                                                                                               
   n_colors: 3

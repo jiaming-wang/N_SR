@@ -10,8 +10,9 @@ import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from model.base_net import *
-from torchvision.transforms import *
+from base_net import *
+# from torchvision.transforms import *
+from torch.autograd import Variable
 
 class Net(nn.Module):
     def __init__(self, num_channels, base_filter, scale_factor, args):
@@ -20,8 +21,8 @@ class Net(nn.Module):
         base_filter = 256
         n_resblocks = 32
 
-        self.sub_mean = MeanShift(args['data']['rgb_range'])
-        self.add_mean = MeanShift(args['data']['rgb_range'], sign=1)
+        # self.sub_mean = MeanShift(args['data']['rgb_range'])
+        # self.add_mean = MeanShift(args['data']['rgb_range'], sign=1)
 
         self.head = ConvBlock(num_channels, base_filter, 3, 1, 1, activation='relu', norm=None)
 
@@ -61,3 +62,8 @@ class Net(nn.Module):
 
         return x    
 
+if __name__ == "__main__":
+    input = Variable(torch.FloatTensor(1, 3, 40, 40))
+    model = Net(num_channels= 3,base_filter=1,scale_factor= 1,args= 1)
+    out = model(input)
+    print(out.shape)

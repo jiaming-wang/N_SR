@@ -64,7 +64,7 @@ class MeanShift(nn.Conv2d):
             p.requires_grad = False
 
 class ConvBlock(torch.nn.Module):
-    def __init__(self, input_size, output_size, kernel_size=3, stride=1, padding=1, bias=True, activation='prelu', norm=None, pad_model=None):
+    def __init__(self, input_size, output_size, kernel_size=3, stride=1, padding=1, bias=True, dilation=1, activation='prelu', norm=None, pad_model=None):
         super(ConvBlock, self).__init__()
 
         self.pad_model = pad_model
@@ -87,10 +87,10 @@ class ConvBlock(torch.nn.Module):
             self.act = torch.nn.Sigmoid()
         
         if self.pad_model == None:   
-            self.conv = torch.nn.Conv2d(input_size, output_size, kernel_size, stride, padding, bias=bias)
+            self.conv = torch.nn.Conv2d(input_size, output_size, kernel_size, stride, padding, dilation, bias=bias)
         elif self.pad_model == 'reflection':
             self.padding = nn.Sequential(nn.ReflectionPad2d(padding))
-            self.conv = torch.nn.Conv2d(input_size, output_size, kernel_size, stride, 0, bias=bias)
+            self.conv = torch.nn.Conv2d(input_size, output_size, kernel_size, stride, 0, dilation, bias=bias)
 
     def forward(self, x):
         out = x
@@ -111,7 +111,7 @@ class ConvBlock(torch.nn.Module):
 #           resnet_block
 ######################################  
 class ResnetBlock(torch.nn.Module):
-    def __init__(self, input_size, kernel_size=3, stride=1, padding=1, bias=True, scale=1, activation='prelu', norm='batch', pad_model=None):
+    def __init__(self, input_size, kernel_size=3, stride=1, padding=1, bias=True, scale=1, dilation=1, activation='prelu', norm='batch', pad_model=None):
         super().__init__()
 
         self.norm = norm
@@ -122,6 +122,7 @@ class ResnetBlock(torch.nn.Module):
         self.padding = padding
         self.bias = bias
         self.scale = scale
+        self.dilation = dilation
         
         if self.norm =='batch':
             self.normlayer = torch.nn.BatchNorm2d(input_size)
@@ -145,13 +146,13 @@ class ResnetBlock(torch.nn.Module):
             self.act = None
 
         if self.pad_model == None:   
-            self.conv1 = torch.nn.Conv2d(input_size, input_size, kernel_size, stride, padding, bias=bias)
-            self.conv2 = torch.nn.Conv2d(input_size, input_size, kernel_size, stride, padding, bias=bias)
+            self.conv1 = torch.nn.Conv2d(input_size, input_size, kernel_size, stride, padding, dilation, bias=bias)
+            self.conv2 = torch.nn.Conv2d(input_size, input_size, kernel_size, stride, padding, dilation, bias=bias)
             self.pad = None
         elif self.pad_model == 'reflection':
             self.pad = nn.Sequential(nn.ReflectionPad2d(padding))
-            self.conv1 = torch.nn.Conv2d(input_size, input_size, kernel_size, stride, 0, bias=bias)
-            self.conv2 = torch.nn.Conv2d(input_size, input_size, kernel_size, stride, 0, bias=bias)
+            self.conv1 = torch.nn.Conv2d(input_size, input_size, kernel_size, stride, 0, dilation, bias=bias)
+            self.conv2 = torch.nn.Conv2d(input_size, input_size, kernel_size, stride, 0, dilation, bias=bias)
 
         layers = filter(lambda x: x is not None, [self.pad, self.conv1, self.normlayer, self.act, self.pad, self.conv2, self.normlayer, self.act])
         self.layers = nn.Sequential(*layers)
@@ -173,19 +174,19 @@ class ResnetBlock_triple(ResnetBlock):
             self.normlayer2 = torch.nn.BatchNorm2d(output_size)
         elif self.norm == 'instance':
             self.normlayer1 = torch.nn.InstanceNorm2d(middle_size)
-            self.normlayer2 = torch.nn.BatchNorm2d(output_size)
+            self.normlayer2 = torch.nn.InstanceNorm2d(output_size)
         else:
             self.normlayer1 = None
             self.normlayer2 = None
             
         if self.pad_model == None:   
-            self.conv1 = torch.nn.Conv2d(self.input_size, middle_size, self.kernel_size, self.stride, self.padding, bias=self.bias)
-            self.conv2 = torch.nn.Conv2d(middle_size, output_size, self.kernel_size, self.stride, self.padding, bias=self.bias)
+            self.conv1 = torch.nn.Conv2d(self.input_size, middle_size, self.kernel_size, self.stride, self.padding, self.dilation, bias=self.bias)
+            self.conv2 = torch.nn.Conv2d(middle_size, output_size, self.kernel_size, self.stride, self.padding, self.dilation, bias=self.bias)
             self.pad = None
         elif self.pad_model == 'reflection':
             self.pad= nn.Sequential(nn.ReflectionPad2d(self.padding))
-            self.conv1 = torch.nn.Conv2d(self.input_size, middle_size, self.kernel_size, self.stride, 0, bias=self.bias)
-            self.conv2 = torch.nn.Conv2d(middle_size, output_size, self.kernel_size, self.stride, 0, bias=self.bias)
+            self.conv1 = torch.nn.Conv2d(self.input_size, middle_size, self.kernel_size, self.stride, 0, self.dilation, bias=self.bias)
+            self.conv2 = torch.nn.Conv2d(middle_size, output_size, self.kernel_size, self.stride, 0, self.dilation, bias=self.bias)
 
         layers = filter(lambda x: x is not None, [self.pad, self.conv1, self.normlayer1, self.act, self.pad, self.conv2, self.normlayer2, self.act])
         self.layers = nn.Sequential(*layers) 

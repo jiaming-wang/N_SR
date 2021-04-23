@@ -12,6 +12,7 @@ from utils.utils import maek_optimizer, make_loss, calculate_psnr, calculate_ssi
 import torch.backends.cudnn as cudnn
 from tqdm import tqdm
 import numpy as np
+from torch.optim import lr_scheduler
 from importlib import import_module
 from torch.autograd import Variable
 from data.data import DatasetFromHdf5
@@ -48,6 +49,8 @@ class Solver(BaseSolver):
         )
         
         self.optimizer = maek_optimizer(self.cfg['schedule']['optimizer'], cfg, self.model.parameters())
+        self.milestones = list(map(lambda x: int(x), self.cfg['schedule']['decay'].split('-')))
+        self.scheduler = lr_scheduler.MultiStepLR(self.optimizer, self.milestones, gamma=self.cfg['schedule']['gamma'], last_epoch=-1)
         self.loss = make_loss(self.cfg['schedule']['loss'])
 
         self.log_name = self.cfg['algorithm'] + '_' + str(self.cfg['data']['upsacle']) + '_' + str(self.timestamp)
@@ -190,6 +193,8 @@ class Solver(BaseSolver):
         if os.path.exists(checkpoint):
             self.model.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: storage)['net'])
             self.epoch = torch.load(checkpoint, map_location=lambda storage, loc: storage)['epoch']
+            for _ in range(self.epoch-1): self.scheduler.step()
+            self.optimizer.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: storage)['optimizer'])
             if self.epoch > self.nEpochs:
                 raise Exception("Pretrain epoch must less than the max epoch!")
         else:
@@ -218,6 +223,7 @@ class Solver(BaseSolver):
                 if not self.cfg['debug']:
                     self.eval()
                     self.save_checkpoint()
+                self.scheduler.step()
                 self.epoch += 1
         except KeyboardInterrupt:
             self.save_checkpoint()

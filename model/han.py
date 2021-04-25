@@ -12,7 +12,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from model.base_net import *
-from torchvision.transforms import *
+# from torchvision.transforms import *
 
 ## Holistic Attention Network (HAN)
 class Net(nn.Module):

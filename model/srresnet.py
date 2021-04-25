@@ -11,7 +11,6 @@ official: batch_size=16, patch_size=24, MSE loss, epoch=500, lr=1e-4, ADAD, deca
 import os
 import torch.nn as nn
 import torch.optim as optim
-from torchvision.transforms import *
 from model.base_net import *
 
 class Net(nn.Module):

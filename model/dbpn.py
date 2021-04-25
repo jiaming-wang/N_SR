@@ -10,7 +10,7 @@ import os
 import torch.nn as nn
 import torch.optim as optim
 from model.base_net import *
-from torchvision.transforms import *
+# from torchvision.transforms import *
 import torch
 
 class Net(nn.Module):

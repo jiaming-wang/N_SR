@@ -10,8 +10,9 @@ from thop import profile
 import importlib, torch
 from utils.config import get_config
 import math
+
 if __name__ == "__main__":
-    model_name = 'EDSR'
+    model_name = 'DBPN'
     net_name = model_name.lower()
     lib = lib = importlib.import_module('model.' + net_name)
     net = lib.Net
@@ -19,7 +20,7 @@ if __name__ == "__main__":
     model = net(
             num_channels=3, 
             base_filter=64,  
-            scale_factor=4,
+            scale_factor=2,
             args= cfg
     )
     input = torch.randn(1, 3, 48, 48)

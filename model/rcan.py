@@ -11,7 +11,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from model.base_net import *
-from torchvision.transforms import *
+# from torchvision.transforms import *
 
 class Net(nn.Module):
     def __init__(self, num_channels, base_filter, scale_factor, args):

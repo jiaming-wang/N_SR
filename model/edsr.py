@@ -10,7 +10,7 @@ import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from base_net import *
+from model.base_net import *
 # from torchvision.transforms import *
 from torch.autograd import Variable
 

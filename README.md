@@ -1,12 +1,13 @@
 <!--
  * @Author: wjm
  * @Date: 2020-06-23 18:35:52
- * @LastEditTime: 2021-03-31 22:03:59
+ * @LastEditTime: 2021-04-26 17:17:40
  * @Description: file content
 -->
 # N_SR
  
 There are some implements of image super-resolution methods with Pytorch.  <br>
+* AdderSR in addersr.py ([AdderSR: Towards Energy Efficient Image Super-Resolution](https://arxiv.org/pdf/2009.08891.pdf)) (2021)
 * SMSR in smsr.py ([Learning Sparse Masks for Efficient Image Super-Resolution](https://arxiv.org/pdf/2006.09603.pdf)) (2021)
 * HAN in han.py ([Single Image Super-Resolution via a Holistic Attention Network](https://arxiv.org/pdf/2008.08767.pdf)) (2020)
 * SAN in san.py ([Second-order Attention Network for Single Image Super-Resolution](http://openaccess.thecvf.com/content_CVPR_2019/papers/Dai_Second-Order_Attention_Network_for_Single_Image_Super-Resolution_CVPR_2019_paper.pdf)) (2020)

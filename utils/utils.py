@@ -28,9 +28,9 @@ def maek_optimizer(opt_type, cfg, params):
 def make_loss(loss_type):
     # loss = {}
     if loss_type == "MSE":
-        loss = nn.MSELoss(size_average=False)
+        loss = nn.MSELoss(size_average=True)
     elif loss_type == "L1":
-        loss = nn.L1Loss(size_average=False)
+        loss = nn.L1Loss(size_average= True)
     elif loss_type == "VGG22":
         loss = VGG(loss_type[3:], rgb_range=255)
     elif loss_type == "VGG54":

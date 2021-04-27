@@ -87,6 +87,7 @@ class Solver(BaseSolver):
                     lambda_sparsity = min((self.epoch - 1) / 50, 1) * lambda0
                     loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
                     epoch_loss += loss.data + lambda_sparsity * loss_sparsity
+                    del sparsity, lambda_sparsity
                 else: 
                     sr = self.model(lr)
                     loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)

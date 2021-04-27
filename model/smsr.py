@@ -400,6 +400,7 @@ class Net(nn.Module):
 
             x = self.tail(out_fea) + F.interpolate(x0, scale_factor=self.scale_factor, mode='bicubic', align_corners=False)
             # x = self.add_mean(x)
+            del out_fea, _spa_mask, _ch_mask, fea
 
             return [x, sparsity]
 

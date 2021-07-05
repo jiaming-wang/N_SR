@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-LastEditTime: 2021-03-31 21:55:08
+LastEditTime: 2021-07-05 00:53:53
 @Description: file content
 '''
 import os, importlib, torch, shutil
@@ -214,6 +214,14 @@ class Solver(BaseSolver):
                 shutil.copy(os.path.join(self.cfg['checkpoint'] + '/' + str(self.log_name), 'latest.pth'),
                             os.path.join(self.cfg['checkpoint'] + '/' + str(self.log_name), 'best.pth'))
 
+    def save_checkpoint_debug(self):
+        super(Solver, self).save_checkpoint()
+        self.ckp['net'] = self.model.state_dict()
+        self.ckp['optimizer'] = self.optimizer.state_dict()
+        if not os.path.exists(self.cfg['checkpoint'] + '/' + str(self.log_name)):
+            os.mkdir(self.cfg['checkpoint'] + '/' + str(self.log_name))
+        torch.save(self.ckp, os.path.join(self.cfg['checkpoint'] + '/' + str(self.log_name), 'latest.pth'))
+
     def run(self):
         self.check_gpu()
         if self.cfg['pretrain']['pretrained']:
@@ -224,8 +232,10 @@ class Solver(BaseSolver):
                 if not self.cfg['debug']:
                     self.eval()
                     self.save_checkpoint()
+                else:
+                    self.save_checkpoint_debug()
                 self.scheduler.step()
                 self.epoch += 1
         except KeyboardInterrupt:
-            self.save_checkpoint()
+            self.save_checkpoint_debug()
         save_config(self.log_name, 'Training done.')

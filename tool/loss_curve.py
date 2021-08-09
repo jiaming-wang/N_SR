@@ -3,12 +3,22 @@
 '''
 Author: wjm
 Date: 2021-07-26 00:26:20
-LastEditTime: 2021-07-26 00:57:30
+LastEditTime: 2021-07-26 10:22:20
 Description: file content
 '''
 
 import matplotlib.pyplot as plt
+import numpy as np
 
+def smoothing(data, weight):
+    last = data[0]
+    new_data = []
+    for point in data:
+        smoothed_val = last * weight + (1 - weight) * point
+        new_data.append(smoothed_val)
+        last = smoothed_val
+    return np.array(new_data)
+    
 def read_txt(txt_path):
     loss_list = []
     psnr_list = []

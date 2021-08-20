@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-06-13 22:18:17
-LastEditTime: 2020-10-26 20:12:01
+LastEditTime: 2021-08-20 23:53:35
 @Description: batch_size=16, patch_size=48, L1 loss, epoch=1000, lr=1e-4, decay=200
 '''
 import os
@@ -15,15 +15,20 @@ import torch.nn.functional as F
 
 ## Second-order Channel Attention Network (SAN)
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, scale_factor, args):
+    def __init__(self, args):
         super(Net, self).__init__()
-
+        
+        self.args = args
+        num_channels = self.args['data']['batch_size']
+        scale_factor = self.args['data']['upsacle']
+        
         n_resgroups = 20
         n_resblocks = 10
         n_feats = 64
         kernel_size = 3
         reduction = 16
         res_scale = 1
+        base_filter = 64
         # RGB mean for DIV2K
         # rgb_mean = (0.4488, 0.4371, 0.4040)
         # rgb_std = (1.0, 1.0, 1.0)

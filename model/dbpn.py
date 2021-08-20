@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-01-29 18:19:22
-LastEditTime: 2020-10-20 16:55:24
+LastEditTime: 2021-08-20 23:55:36
 @Description: batch_size=16, patch_size=32, L1 loss, lr=1e-4, epoch=2000, ADAM, decay=1000
 '''
 import os
@@ -14,9 +14,13 @@ from model.base_net import *
 import torch
 
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, scale_factor, args):
+    def __init__(self, args):
         super(Net, self).__init__()
+
         self.args = args
+        num_channels = self.args['data']['batch_size']
+        scale_factor = self.args['data']['upsacle']
+        base_filter = 64
         num_stages = 7
         if self.args['data']['upsacle'] == 2:
         	kernel = 6

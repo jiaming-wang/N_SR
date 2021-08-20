@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-22 09:46:46
-@LastEditTime: 2020-07-16 16:36:51
+LastEditTime: 2021-08-20 23:54:58
 @Description: batch_size=16, patch_size=48, L1 loss, epoch=300, ADAM, decay=150, lr=1e-4
 '''
 import os
@@ -15,9 +15,13 @@ from model.base_net import *
 from torch.autograd import Variable
 
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, scale_factor, args):
+    def __init__(self, args):
         super(Net, self).__init__()
 
+        self.args = args
+        num_channels = self.args['data']['batch_size']
+        scale_factor = self.args['data']['upsacle']
+        
         base_filter = 256
         n_resblocks = 32
 

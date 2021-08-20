@@ -3,14 +3,13 @@
 '''
 @Author: wjm
 @Date: 2020-06-18 20:25:26
-LastEditTime: 2020-11-20 09:38:21
+LastEditTime: 2021-08-20 23:47:47
 @Description: file content
 '''
 import numpy as np 
 import glob, os, math, h5py, cv2
 from scipy import misc
 # from utils.iqa.vifp import vifp_mscale
-
 class compare_psnr_ssim:
     
     def __init__(self, scale, path, num):

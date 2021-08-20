@@ -3,7 +3,7 @@
 '''
 Author: wjm
 Date: 2021-03-03 11:02:10
-LastEditTime: 2021-03-03 11:38:34
+LastEditTime: 2021-08-20 23:54:50
 Description: batch_size=16, patch_size=48, L1 loss, epoch=250, lr=1e-5, decay=250, ADAM
 '''
 
@@ -16,8 +16,12 @@ from model.base_net import *
 
 ## Holistic Attention Network (HAN)
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, scale_factor, args):
+    def __init__(self, args):
         super(Net, self).__init__()
+        
+        self.args = args
+        num_channels = self.args['data']['batch_size']
+        scale_factor = self.args['data']['upsacle']
         
         n_resgroups = 10
         n_resblocks = 20

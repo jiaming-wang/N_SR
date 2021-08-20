@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-06-16 15:19:38
-@LastEditTime: 2020-07-16 16:38:16
+LastEditTime: 2021-08-20 23:51:20
 @Description: batch-size = 64, patch-size = 33, MSE, SGD, lr = 0.01, epoch = 1000, decay=500
 '''
 
@@ -15,11 +15,14 @@ from model.base_net import *
 from torchvision.transforms import *
 
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, scale_factor, args):
+    def __init__(self, args):
         super(Net, self).__init__()
 
+        self.args = args
+        num_channels = self.args['data']['batch_size']
+        scale_factor = self.args['data']['upsacle']
+        
         base_filter = 64
-        num_channels = 3
         self.head = ConvBlock(num_channels, base_filter, 9, 1, 4, activation='relu', norm=None, bias = True)
 
         self.body = ConvBlock(base_filter, 32, 1, 1, 0, activation='relu', norm=None, bias = True)

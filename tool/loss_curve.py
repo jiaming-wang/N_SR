@@ -3,7 +3,7 @@
 '''
 Author: wjm
 Date: 2021-07-26 00:26:20
-LastEditTime: 2021-07-26 10:22:20
+LastEditTime: 2021-08-20 23:47:35
 Description: file content
 '''
 
@@ -29,13 +29,13 @@ def read_txt(txt_path):
         try:
             if "Loss=" in line:
                 loss_value = line.split('Loss=')[1].replace('\n','')
-                loss_list.append(loss_value)
+                loss_list.append(float(loss_value))
             elif "PSNR=" in line:
                 psnr_value = line.split('PSNR=')[1]
-                psnr_list.append(psnr_value[0:7])
+                psnr_list.append(float(psnr_value[0:7]))
             elif "SSIM=" in line:
                 ssim_value = line.split('SSIM=')[1].replace('\n','')
-                ssim_list.append(ssim_value)
+                ssim_list.append(float(ssim_value))
         finally:
             pass
     file_obj.close()
@@ -48,4 +48,3 @@ def list2curve(loss_list):
     plt.ylabel('Loss', fontsize=14)
     plt.legend()
     plt.show()
-    # return index

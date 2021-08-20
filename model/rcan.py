@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-06-02 21:02:40
-@LastEditTime: 2020-07-16 16:39:19
+LastEditTime: 2021-08-20 23:54:25
 @Description: batch_size=16, patch_size=48, L1 loss, epoch=1000, lr=1e-4, decay=200, ADAM
 '''
 import os
@@ -14,12 +14,16 @@ from model.base_net import *
 # from torchvision.transforms import *
 
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, scale_factor, args):
+    def __init__(self, args):
         super(Net, self).__init__()
         
         # RGB mean for DIV2K
         # rgb_mean = (0.4488, 0.4371, 0.4040)
         # rgb_std = (1.0, 1.0, 1.0)
+        self.args = args
+        num_channels = self.args['data']['batch_size']
+        scale_factor = self.args['data']['upsacle']
+        
         self.sub_mean = MeanShift(args['data']['rgb_range'])
         self.add_mean = MeanShift(args['data']['rgb_range'], sign=1)
         base_filter = 64

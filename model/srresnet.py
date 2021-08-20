@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-02-14 22:38:14
-LastEditTime: 2021-01-15 22:25:37
+LastEditTime: 2021-08-20 23:50:30
 @Description: batch_size=16, patch_size=24, MSE loss, epoch=8000, lr=1e-4, ADAD, decay=4000
 official: batch_size=16, patch_size=24, MSE loss, epoch=500, lr=1e-4, ADAD, decay=250
 '''
@@ -14,12 +14,16 @@ import torch.optim as optim
 from model.base_net import *
 
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, scale_factor, args):
+    def __init__(self, args):
         super(Net, self).__init__()
+        
         self.args = args
+        num_channels = self.args['data']['batch_size']
+        scale_factor = self.args['data']['upsacle']
 
         base_filter = 64
         n_resblocks = 16
+        
         #The input layer
         self.feat0 = ConvBlock(num_channels, base_filter, 9, 1, 4, activation='prelu', norm=None)
 

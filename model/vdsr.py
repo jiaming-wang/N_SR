@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-02-18 15:19:38
-@LastEditTime: 2020-07-16 16:39:40
+LastEditTime: 2021-08-20 23:51:39
 @Description: file content
 '''
 
@@ -15,11 +15,14 @@ from model.base_net import *
 from torchvision.transforms import *
 
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, scale_factor, args):
+    def __init__(self, args):
         super(Net, self).__init__()
 
+        self.args = args
+        num_channels = self.args['data']['batch_size']
+        scale_factor = self.args['data']['upsacle']
+        
         base_filter = 64
-        num_channels = 3
         self.head = ConvBlock(num_channels, base_filter, 3, 1, 1, activation='relu', norm=None, bias = True)
 
         body = [

@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-02-17 22:19:38
-LastEditTime: 2021-01-19 17:11:54
+LastEditTime: 2021-08-20 23:44:53
 @Description: file content
 '''
 from solver.basesolver import BaseSolver
@@ -25,9 +25,6 @@ class Testsolver(BaseSolver):
         net = lib.Net
         
         self.model = net(
-                num_channels=self.cfg['data']['n_colors'], 
-                base_filter=64,  
-                scale_factor=self.cfg['data']['upsacle'], 
                 args = self.cfg
         )
         self.fmap_block = list()

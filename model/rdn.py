@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-01-29 17:54:45
-@LastEditTime: 2020-07-16 16:39:12
+LastEditTime: 2021-08-20 23:54:08
 @Description: batch_size=16, patch_size=32, L1 loss, lr=1e-4, epoch=5000, decay=2500, ADAM
 official: batch_size=16, patch_size=32, L1 loss, lr=1e-4, epoch=1000, decay=200, ADAM
 '''
@@ -33,7 +33,7 @@ class RDB(nn.Module):
         return x
 
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, scale_factor, args):
+    def __init__(self, args):
     # channels, denselayer, growthrate):
         super(Net, self).__init__()
         '''
@@ -42,6 +42,11 @@ class Net(nn.Module):
         G: the growth rate 32
         G0: local and global feature fusion layers 64filter
         '''
+
+        self.args = args
+        num_channels = self.args['data']['batch_size']
+        scale_factor = self.args['data']['upsacle']
+        
         self.D = 20
         self.C = 6
         self.G = 32

@@ -3,10 +3,11 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-LastEditTime: 2021-07-05 00:53:53
+LastEditTime: 2021-08-20 23:37:51
 @Description: file content
 '''
 import os, importlib, torch, shutil
+from torch.cuda.amp import autocast as autocast, GradScaler
 from solver.basesolver import BaseSolver
 from utils.utils import maek_optimizer, make_loss, calculate_psnr, calculate_ssim, save_config, save_net_config, save_net_py
 import torch.backends.cudnn as cudnn
@@ -42,9 +43,6 @@ class Solver(BaseSolver):
                 num_workers=1)
 
         self.model = net(
-            num_channels=self.cfg['data']['n_colors'], 
-            base_filter=64,  
-            scale_factor=self.cfg['data']['upsacle'], 
             args = self.cfg
         )
         
@@ -56,8 +54,8 @@ class Solver(BaseSolver):
         self.log_name = self.cfg['algorithm'] + '_' + str(self.cfg['data']['upsacle']) + '_' + str(self.timestamp)
         # save log
         self.writer = SummaryWriter('log/' + str(self.log_name))
-        if not self.cfg['algorithm'] == 'SMSR':
-            summary(self.model, (3, self.cfg['data']['patch_size'], self.cfg['data']['patch_size']), device='cpu')
+        # if not self.cfg['algorithm'] == 'SMSR':
+        #     summary(self.model, (3, self.cfg['data']['patch_size'], self.cfg['data']['patch_size']), device='cpu')
         save_net_config(self.log_name, self.model)
         save_net_py(self.log_name, net_name)
         save_yml(cfg, os.path.join('log/' + str(self.log_name), 'config.yml'))
@@ -66,6 +64,7 @@ class Solver(BaseSolver):
         save_config(self.log_name, 'Model parameters: '+ str(sum(param.numel() for param in self.model.parameters())))
 
     def train(self): 
+        scaler = GradScaler()
         with tqdm(total=len(self.train_loader), miniters=1,
                 desc='Initial Training Epoch: [{}/{}]'.format(self.epoch, self.nEpochs)) as t:
 
@@ -80,19 +79,35 @@ class Solver(BaseSolver):
                 self.optimizer.zero_grad()               
                 self.model.train()
 
-                if self.cfg['algorithm'] == 'SMSR':
-                    sr, sparsity = self.model(lr)
-                    loss_sparsity = sparsity.mean()
-                    lambda0 = 0.1
-                    lambda_sparsity = min((self.epoch - 1) / 50, 1) * lambda0
-                    loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
-                    epoch_loss += loss.data + lambda_sparsity * loss_sparsity
-                    del sparsity, lambda_sparsity
-                else: 
+                # if self.cfg['algorithm'] == 'SMSR':
+                #     if self.cfg['use_apex']:
+                #         with autocast():
+                #             sr, sparsity = self.model(lr)
+                #     else:
+                #         sr, sparsity = self.model(lr)
+                #     loss_sparsity = sparsity.mean()
+                #     lambda0 = 0.1
+                #     lambda_sparsity = min((self.epoch - 1) / 50, 1) * lambda0
+                #     loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
+                #     epoch_loss += loss.data + lambda_sparsity * loss_sparsity
+                #     del sparsity, lambda_sparsity
+                # else:
+                #     if self.cfg['use_apex']:
+                #         with autocast():
+                #             sr = self.model(lr)
+                #     else:
+                #         sr = self.model(lr)
+                #     loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
+                #     epoch_loss += loss.data
+                if self.cfg['schedule']['use_apex'] and self.cfg['gpu_mode']:
+                        with autocast():
+                            sr = self.model(lr)
+                            loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
+                else:
                     sr = self.model(lr)
                     loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
-                    epoch_loss += loss.data
-
+                epoch_loss += loss.data
+                
                 # if not self.cfg['schedule']['use_YCbCr']:
                 #     loss = self.loss(sr, hr) / (self.cfg['data']['batch_size'] * 2)
                 # else:
@@ -105,15 +120,22 @@ class Solver(BaseSolver):
                 t.set_postfix_str("Batch loss {:.4f}".format(loss.item()))
                 t.update()
 
-                loss.backward()
+                if self.cfg['schedule']['use_apex'] and self.cfg['gpu_mode']:
+                    scaler.scale(loss).backward()
+                    # scaler.unscale_(self.optimizer)
+                    scaler.step(self.optimizer)
+                    scaler.update()
+                else:
+                    loss.backward()
+                    self.optimizer.step()
+
                 # print("grad before clip:"+str(self.model.output_conv.conv.weight.grad))
                 if self.cfg['schedule']['gclip'] > 0:
                     nn.utils.clip_grad_norm_(
                         self.model.parameters(),
                         self.cfg['schedule']['gclip']
                     )
-                self.optimizer.step()
-                
+                        
             self.records['Loss'].append(epoch_loss / len(self.train_loader))
             save_config(self.log_name, 'Initial Training Epoch {}: Loss={:.4f}'.format(self.epoch, self.records['Loss'][-1]))
             self.writer.add_scalar('Loss_epoch', self.records['Loss'][-1], self.epoch)
@@ -137,8 +159,6 @@ class Solver(BaseSolver):
 
                 batch_psnr, batch_ssim = [], []
                 for c in range(sr.shape[0]):
-                    #predict_sr = (sr[c, ...].cpu().numpy().transpose((1, 2, 0)) + 1) * 127.5
-                    #ground_truth = (hr[c, ...].cpu().numpy().transpose((1, 2, 0)) + 1) * 127.5
                     if not self.cfg['data']['normalize']:
                         predict_sr = (sr[c, ...].cpu().numpy().transpose((1, 2, 0))) * 255
                         ground_truth = (hr[c, ...].cpu().numpy().transpose((1, 2, 0))) * 255

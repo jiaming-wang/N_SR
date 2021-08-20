@@ -3,7 +3,7 @@
 '''
 Author: wjm
 Date: 2020-10-20 16:40:30
-LastEditTime: 2021-03-31 09:55:13
+LastEditTime: 2021-08-20 23:56:24
 @Description: batch_size=16, patch_size=48, L1 loss, lr=1e-4, epoch=500, ADAM, decay=150, n_feats = 128, depth = 12
 '''
 import os
@@ -17,10 +17,13 @@ from PIL import Image
 import torch.nn.functional as F
 
 class Net(nn.Module):
-    def __init__(self, num_channels, base_filter, scale_factor, args):
+    def __init__(self, args):
         super(Net, self).__init__()
-
-        #n_convblock = args.n_convblocks
+        
+        self.args = args
+        num_channels = self.args['data']['batch_size']
+        scale_factor = self.args['data']['upsacle']
+        
         n_feats = 128
         self.depth = 12
         kernel_size = 3 

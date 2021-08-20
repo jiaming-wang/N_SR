@@ -44,7 +44,7 @@ data:
 
 schedule:
   lr: 1e-5
-  decay: '500' #500-1000
+  decay: '500' #e.g. '500-1000'
   gamma: 0.1
   optimizer: ADAM #[ADAM, SGD, RMSprop]
   momentum: 0.9 #SGD momentum
@@ -56,4 +56,5 @@ schedule:
   gclip: 0.4
   loss: L1 #[MSE, L1, VGG22, VGG54, Cycle]
   use_YCbCr: False
+  use_apex: False
 

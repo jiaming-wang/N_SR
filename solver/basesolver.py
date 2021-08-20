@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:07:03
-LastEditTime: 2020-08-16 01:38:15
+LastEditTime: 2021-08-21 00:32:02
 @Description: file content
 '''
 import os, torch, time
@@ -19,7 +19,9 @@ class BaseSolver:
         self.checkpoint_dir = cfg['checkpoint']
         self.epoch = 1
 
-        self.timestamp = int(time.time())
+        time_now = int(time.time())
+        time_local = time.localtime(time_now)
+        self.timestamp = time.strftime("%Y-%m-%d-%H:%M:%S", time_local)
 
         if cfg['gpu_mode']:
             self.num_workers = cfg['threads']

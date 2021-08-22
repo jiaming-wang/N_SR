@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-02-18 15:19:38
-LastEditTime: 2021-08-20 23:51:39
+LastEditTime: 2021-08-22 10:48:21
 @Description: file content
 '''
 
@@ -19,7 +19,7 @@ class Net(nn.Module):
         super(Net, self).__init__()
 
         self.args = args
-        num_channels = self.args['data']['batch_size']
+        num_channels = self.args['data']['n_colors']
         scale_factor = self.args['data']['upsacle']
         
         base_filter = 64

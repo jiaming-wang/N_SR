@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-02-14 22:38:14
-LastEditTime: 2021-08-20 23:50:30
+LastEditTime: 2021-08-22 10:48:24
 @Description: batch_size=16, patch_size=24, MSE loss, epoch=8000, lr=1e-4, ADAD, decay=4000
 official: batch_size=16, patch_size=24, MSE loss, epoch=500, lr=1e-4, ADAD, decay=250
 '''
@@ -18,7 +18,7 @@ class Net(nn.Module):
         super(Net, self).__init__()
         
         self.args = args
-        num_channels = self.args['data']['batch_size']
+        num_channels = self.args['data']['n_colors']
         scale_factor = self.args['data']['upsacle']
 
         base_filter = 64

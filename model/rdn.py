@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-01-29 17:54:45
-LastEditTime: 2021-08-20 23:54:08
+LastEditTime: 2021-08-22 10:48:39
 @Description: batch_size=16, patch_size=32, L1 loss, lr=1e-4, epoch=5000, decay=2500, ADAM
 official: batch_size=16, patch_size=32, L1 loss, lr=1e-4, epoch=1000, decay=200, ADAM
 '''
@@ -44,7 +44,7 @@ class Net(nn.Module):
         '''
 
         self.args = args
-        num_channels = self.args['data']['batch_size']
+        num_channels = self.args['data']['n_colors']
         scale_factor = self.args['data']['upsacle']
         
         self.D = 20

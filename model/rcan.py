@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-06-02 21:02:40
-LastEditTime: 2021-08-20 23:54:25
+LastEditTime: 2021-08-22 10:48:42
 @Description: batch_size=16, patch_size=48, L1 loss, epoch=1000, lr=1e-4, decay=200, ADAM
 '''
 import os
@@ -21,7 +21,7 @@ class Net(nn.Module):
         # rgb_mean = (0.4488, 0.4371, 0.4040)
         # rgb_std = (1.0, 1.0, 1.0)
         self.args = args
-        num_channels = self.args['data']['batch_size']
+        num_channels = self.args['data']['n_colors']
         scale_factor = self.args['data']['upsacle']
         
         self.sub_mean = MeanShift(args['data']['rgb_range'])

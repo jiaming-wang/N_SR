@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-01-29 18:19:22
-LastEditTime: 2021-08-20 23:55:36
+LastEditTime: 2021-08-22 10:48:52
 @Description: batch_size=16, patch_size=32, L1 loss, lr=1e-4, epoch=2000, ADAM, decay=1000
 '''
 import os
@@ -18,7 +18,7 @@ class Net(nn.Module):
         super(Net, self).__init__()
 
         self.args = args
-        num_channels = self.args['data']['batch_size']
+        num_channels = self.args['data']['n_colors']
         scale_factor = self.args['data']['upsacle']
         base_filter = 64
         num_stages = 7

@@ -347,7 +347,7 @@ class Net(nn.Module):
         super(Net, self).__init__()
 
         self.args = args
-        num_channels = self.args['data']['batch_size']
+        num_channels = self.args['data']['n_colors']
         scale_factor = self.args['data']['upsacle']
         
         n_feats = 64

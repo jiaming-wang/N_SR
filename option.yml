@@ -6,7 +6,7 @@
 # 
 
 name: Net
-algorithm: SRResNet #[SMSR, HAN, CSNLA, SAN, RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
+algorithm: MHAN #[SMSR, MHAN, HAN, CSNLA, SAN, RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
 nEpochs: 1000
 gpu_mode: False
 save_best: False
@@ -17,11 +17,11 @@ threads: 8
 seed: 123
 checkpoint: checkpoint
 data_dir: ./dataset
-train_dataset: hr
-valid_dataset: valid
+train_dataset: train
+valid_dataset: test
 
 test:
-  algorithm: SRResNet #[SMSR, HAN, CSNLA, SAN, RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
+  algorithm: RDN #[SMSR, MHAN, HAN, CSNLA, SAN, RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
   type: test #[test, eval]
   data_dir: ./dataset
   test_dataset: valid
@@ -34,13 +34,16 @@ pretrain:
 
 data:
   upsacle:  4
-  batch_size: 1
+  batch_size: 16
   patch_size: 48
   data_augmentation: False                                                                                                                                                                                               
   n_colors: 3
   rgb_range: 255
   normalize : False
   noise: 0
+  blur: False
+  blur_type: aniso_gaussian #[aniso_gaussian, iso_gaussian]
+  
 
 schedule:
   lr: 1e-5

@@ -41,8 +41,8 @@ data:
   rgb_range: 255
   normalize : False
   noise: 0
-  blur: False
-  blur_type: aniso_gaussian #[aniso_gaussian, iso_gaussian]
+  blur: True
+  blur_type: iso_gaussian #[aniso_gaussian, iso_gaussian]
   
 
 schedule:

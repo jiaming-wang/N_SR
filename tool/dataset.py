@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-23 14:57:22
-LastEditTime: 2021-10-22 09:35:48
+LastEditTime: 2021-08-21 01:07:33
 @Description: file content
 '''
 import torch.utils.data as data
@@ -144,7 +144,7 @@ class Data_test(data.Dataset):
         target = load_img(self.image_filenames[index])
         _, file = os.path.split(self.image_filenames[index])
         target = target.crop((0, 0, target.size[0] // self.upscale_factor * self.upscale_factor, target.size[1] // self.upscale_factor * self.upscale_factor))
-        #target, _ = get_patch(target,self.patch_size, self.upscale_factor)
+        target, _ = get_patch(target,self.patch_size, self.upscale_factor)
 
         if self.data_augmentation:
             target, _ = augment(target)
@@ -164,7 +164,7 @@ class Data_test(data.Dataset):
         input = self.bicubic(input, scale=1/self.upscale_factor)
 
         if self.cfg['data']['noise'] != 0:
-            noise = torch.randn_like(input).mul_(self.cfg['data']['noise']/255).float().view(-1, input.shape[1], input.shape[2], input.shape[3])
+            noise = torch.randn_like(input).mul_(self.cfg['data']['noise']/255).float().view(-1, input.shape[1], input.shape[2], input.shape[3]).mul_(self.cfg['data']['noise'])
             input = input + noise
 
         bicubic = self.bicubic(input, scale=self.upscale_factor)

@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-01-29 18:19:22
-LastEditTime: 2021-08-22 10:48:52
+LastEditTime: 2021-10-22 09:38:23
 @Description: batch_size=48, patch_size=64, L1 loss, lr=1e-4, epoch=2000, ADAM, decay=1000
 '''
 import torch
@@ -287,7 +287,7 @@ class Net(nn.Module):
         self.args = args
         in_channels = self.args['data']['n_colors']
         scale = self.args['data']['upsacle']
-        num_features = 8
+        num_features = 64
 
         self.conv_in = nn.Conv2d(in_channels, num_features * 4, kernel_size=3, padding=1, bias=True)
         self.feat_in = nn.Conv2d(num_features * 4, num_features, kernel_size=3, padding=1, bias=True)

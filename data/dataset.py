@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-23 14:57:22
-LastEditTime: 2021-10-22 09:35:48
+LastEditTime: 2021-11-03 10:30:40
 @Description: file content
 '''
 import torch.utils.data as data
@@ -151,7 +151,10 @@ class Data_test(data.Dataset):
         
         if self.transform:
             target = self.transform(target)
-
+        
+        C, H, W = target.size()
+        input = target.view(-1, C, H, W)
+        
         if self.cfg['data']['blur']:
             self.gen_kernel = Gaussin_Kernel(kernel_size=21, blur_type=self.cfg['data']['blur_type'], sig=2.6, sig_min=0.2, sig_max=4.0,
                 lambda_1=0.2, lambda_2=4.0, theta=0, lambda_min=0.2, lambda_max=4.0)

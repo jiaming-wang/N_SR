@@ -11,7 +11,6 @@ import math
 import torch.optim as optim
 import torch.nn as nn
 from importlib import import_module
-from torch.cuda.amp import autocast as autocast
 
 ######################################
 #            common model

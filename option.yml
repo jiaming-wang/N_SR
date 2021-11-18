@@ -41,7 +41,7 @@ data:
   rgb_range: 255
   normalize : False
   noise: 0
-  blur: True
+  blur: False
   blur_type: iso_gaussian #[aniso_gaussian, iso_gaussian]
   
 
@@ -57,7 +57,7 @@ schedule:
   alpha: 0.9 #RMSprop alpha
   weight_dency: 0
   gclip: 0.4
-  loss: L1 #[MSE, L1, VGG22, VGG54, Cycle]
+  loss: FFT #[MSE, L1, VGG22, VGG54, Cycle]
   use_YCbCr: False
   use_apex: False
 

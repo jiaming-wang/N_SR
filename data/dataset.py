@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-23 14:57:22
-LastEditTime: 2021-11-03 10:30:40
+LastEditTime: 2021-11-19 11:44:32
 @Description: file content
 '''
 import torch.utils.data as data
@@ -145,9 +145,6 @@ class Data_test(data.Dataset):
         _, file = os.path.split(self.image_filenames[index])
         target = target.crop((0, 0, target.size[0] // self.upscale_factor * self.upscale_factor, target.size[1] // self.upscale_factor * self.upscale_factor))
         #target, _ = get_patch(target,self.patch_size, self.upscale_factor)
-
-        if self.data_augmentation:
-            target, _ = augment(target)
         
         if self.transform:
             target = self.transform(target)

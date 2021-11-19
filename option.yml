@@ -46,7 +46,7 @@ data:
   
 
 schedule:
-  lr: 1e-5
+  lr: 1e-4
   decay: '500' #e.g. '500-1000'
   gamma: 0.1
   optimizer: ADAM #[ADAM, SGD, RMSprop]
@@ -57,7 +57,7 @@ schedule:
   alpha: 0.9 #RMSprop alpha
   weight_dency: 0
   gclip: 0.4
-  loss: FFT #[MSE, L1, VGG22, VGG54, Cycle]
+  loss: L1 #[MSE, L1, VGG22, VGG54, Cycle]
   use_YCbCr: False
   use_apex: False
 

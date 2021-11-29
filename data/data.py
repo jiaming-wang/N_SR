@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2020-02-16 19:22:41
-LastEditTime: 2020-11-06 11:19:40
+LastEditTime: 2021-11-29 11:13:35
 @Description: file content
 '''
 from os.path import join
@@ -29,8 +29,8 @@ class DatasetFromHdf5(data.Dataset):
         hf = h5py.File(file_path)
         self.data = numpy.array(hf.get('data'))
         self.target = numpy.array(hf.get('label'))
-        self.data = numpy.transpose(self.data, (0, 3, 1, 2))
-        self.target = numpy.transpose(self.target, (0, 3, 1, 2))
+        # self.data = numpy.transpose(self.data, (0, 3, 1, 2))
+        # self.target = numpy.transpose(self.target, (0, 3, 1, 2))
 
     def __getitem__(self, index):
         return torch.from_numpy(self.data[index,:,:,:]).float(), torch.from_numpy(self.target[index,:,:,:]).float()

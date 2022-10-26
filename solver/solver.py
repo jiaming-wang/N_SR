@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-LastEditTime: 2021-08-20 23:37:51
+LastEditTime: 2022-10-26 15:38:37
 @Description: file content
 '''
 import os, importlib, torch, shutil
@@ -56,12 +56,12 @@ class Solver(BaseSolver):
         self.writer = SummaryWriter('log/' + self.cfg['algorithm'] + '/' + str(self.log_name))
         # if not self.cfg['algorithm'] == 'SMSR':
         #     summary(self.model, (3, self.cfg['data']['patch_size'], self.cfg['data']['patch_size']), device='cpu')
-        save_net_config(self.log_name, self.model)
-        save_net_py(self.log_name, net_name)
-        save_yml(cfg, os.path.join('log/' + str(self.log_name), 'config.yml'))
-        save_config(self.log_name, 'Train dataset has {} images and {} batches.'.format(len(self.train_dataset), len(self.train_loader)))
-        save_config(self.log_name, 'Val dataset has {} images and {} batches.'.format(len(self.val_dataset), len(self.val_loader)))
-        save_config(self.log_name, 'Model parameters: '+ str(sum(param.numel() for param in self.model.parameters())))
+        save_net_config(self.cfg['algorithm'] + '/'+self.log_name, self.model)
+        save_net_py(self.cfg['algorithm'] + '/'+self.log_name, net_name)
+        save_yml(cfg, os.path.join('log/'  + self.cfg['algorithm'] + '/' + str(self.log_name), 'config.yml'))
+        save_config(self.cfg['algorithm'] + '/'+self.log_name, 'Train dataset has {} images and {} batches.'.format(len(self.train_dataset), len(self.train_loader)))
+        save_config(self.cfg['algorithm'] + '/'+self.log_name, 'Val dataset has {} images and {} batches.'.format(len(self.val_dataset), len(self.val_loader)))
+        save_config(self.cfg['algorithm'] + '/'+self.log_name, 'Model parameters: '+ str(sum(param.numel() for param in self.model.parameters())))
 
     def train(self): 
         scaler = GradScaler()
@@ -137,7 +137,7 @@ class Solver(BaseSolver):
                     )
                         
             self.records['Loss'].append(epoch_loss / len(self.train_loader))
-            save_config(self.log_name, 'Initial Training Epoch {}: Loss={:.4f}'.format(self.epoch, self.records['Loss'][-1]))
+            save_config(self.cfg['algorithm'] + '/'+self.log_name, 'Initial Training Epoch {}: Loss={:.4f}'.format(self.epoch, self.records['Loss'][-1]))
             self.writer.add_scalar('Loss_epoch', self.records['Loss'][-1], self.epoch)
 
     def eval(self):
@@ -179,7 +179,7 @@ class Solver(BaseSolver):
             self.records['PSNR'].append(np.array(psnr_list).mean())
             self.records['SSIM'].append(np.array(ssim_list).mean())
 
-            save_config(self.log_name, 'Val Epoch {}: PSNR={:.4f}, SSIM={:.4f}'.format(self.epoch, self.records['PSNR'][-1],
+            save_config(self.cfg['algorithm'] + '/'+ self.log_name, 'Val Epoch {}: PSNR={:.4f}, SSIM={:.4f}'.format(self.epoch, self.records['PSNR'][-1],
                                                                     self.records['SSIM'][-1]))
             self.writer.add_scalar('PSNR_epoch', self.records['PSNR'][-1], self.epoch)
             self.writer.add_scalar('SSIM_epoch', self.records['SSIM'][-1], self.epoch)
@@ -226,7 +226,7 @@ class Solver(BaseSolver):
         self.ckp['net'] = self.model.state_dict()
         self.ckp['optimizer'] = self.optimizer.state_dict()
         if not os.path.exists(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm'] + '/' + str(self.log_name)):
-            os.mkdir(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm'] + '/' + str(self.log_name))
+            os.makedirs(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm']  + '/' + str(self.log_name))
         torch.save(self.ckp, os.path.join(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm'] + '/' + str(self.log_name), 'latest.pth'))
 
         if self.cfg['save_best']:
@@ -258,4 +258,4 @@ class Solver(BaseSolver):
                 self.epoch += 1
         except KeyboardInterrupt:
             self.save_checkpoint_debug()
-        save_config(self.log_name, 'Training done.')
+        save_config(self.cfg['algorithm'] + '/'+self.log_name, 'Training done.')

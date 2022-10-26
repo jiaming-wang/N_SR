@@ -53,7 +53,7 @@ class Solver(BaseSolver):
 
         self.log_name = self.cfg['algorithm'] + '_' + str(self.cfg['data']['upsacle']) + '_' + str(self.timestamp)
         # save log
-        self.writer = SummaryWriter('log/' + str(self.log_name))
+        self.writer = SummaryWriter('log/' + self.cfg['algorithm'] + '/' + str(self.log_name))
         # if not self.cfg['algorithm'] == 'SMSR':
         #     summary(self.model, (3, self.cfg['data']['patch_size'], self.cfg['data']['patch_size']), device='cpu')
         save_net_config(self.log_name, self.model)
@@ -225,14 +225,14 @@ class Solver(BaseSolver):
         super(Solver, self).save_checkpoint()
         self.ckp['net'] = self.model.state_dict()
         self.ckp['optimizer'] = self.optimizer.state_dict()
-        if not os.path.exists(self.cfg['checkpoint'] + '/' + str(self.log_name)):
-            os.mkdir(self.cfg['checkpoint'] + '/' + str(self.log_name))
-        torch.save(self.ckp, os.path.join(self.cfg['checkpoint'] + '/' + str(self.log_name), 'latest.pth'))
+        if not os.path.exists(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm'] + '/' + str(self.log_name)):
+            os.mkdir(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm'] + '/' + str(self.log_name))
+        torch.save(self.ckp, os.path.join(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm'] + '/' + str(self.log_name), 'latest.pth'))
 
         if self.cfg['save_best']:
             if self.records['PSNR'] != [] and self.records['PSNR'][-1] == np.array(self.records['PSNR']).max():
-                shutil.copy(os.path.join(self.cfg['checkpoint'] + '/' + str(self.log_name), 'latest.pth'),
-                            os.path.join(self.cfg['checkpoint'] + '/' + str(self.log_name), 'best.pth'))
+                shutil.copy(os.path.join(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm'] + '/' + str(self.log_name), 'latest.pth'),
+                            os.path.join(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm'] + '/' + str(self.log_name), 'best.pth'))
 
     def save_checkpoint_debug(self):
         super(Solver, self).save_checkpoint()

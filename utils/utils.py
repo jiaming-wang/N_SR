@@ -26,11 +26,12 @@ def maek_optimizer(opt_type, cfg, params):
     return optimizer
 
 def make_loss(loss_type):
-    # loss = {}
     if loss_type == "MSE":
         loss = nn.MSELoss(size_average=True)
     elif loss_type == "L1":
         loss = nn.L1Loss(size_average= True)
+    elif loss_type == 'FFT':
+        loss = FFTLoss()
     elif loss_type == "VGG22":
         loss = VGG(loss_type[3:], rgb_range=255)
     elif loss_type == "VGG54":
@@ -40,6 +41,10 @@ def make_loss(loss_type):
     else:
         raise ValueError
     return loss
+
+######################################
+#          loss function
+######################################  
 
 class TVLoss(nn.Module):
     def __init__(self, TVLoss_weight = 1):
@@ -69,7 +74,16 @@ class CycleLoss(nn.Module):
     def forward(self, x_hr, x_lr, scale = 1/4):
         down_x = F.interpolate(x_hr, scale_factor=scale, mode='bicubic')
         return self.loss(down_x, x_lr)
-        
+
+class FFTLoss(nn.Module):
+    def __init__(self):
+        super(FFTLoss, self).__init__()
+
+    def forward(self, sr, hr):
+        loss = F.l1_loss(torch.rfft(sr, signal_ndim=2, normalized=False, onesided=False), 
+                            torch.rfft(hr, signal_ndim=2, normalized=False, onesided=False))
+        return loss
+
 def get_path(subdir):
     return os.path.join(subdir)
 

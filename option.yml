@@ -9,7 +9,7 @@ name: Net
 algorithm: MHAN #[SMSR, MHAN, HAN, CSNLA, SAN, RCAN, EDSR, RDN, DBPN, SRResNet, SRCNN]
 nEpochs: 1000
 gpu_mode: False
-save_best: False
+save_best: True
 debug: False
 gpus: [0, 1]
 threads: 8
@@ -35,7 +35,7 @@ pretrain:
 data:
   upsacle:  4
   batch_size: 16
-  patch_size: 48
+  patch_size: 20
   data_augmentation: False                                                                                                                                                                                               
   n_colors: 3
   rgb_range: 255

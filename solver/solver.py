@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-13 23:04:48
-LastEditTime: 2022-10-26 15:38:37
+LastEditTime: 2022-11-01 22:23:24
 @Description: file content
 '''
 import os, importlib, torch, shutil
@@ -232,15 +232,18 @@ class Solver(BaseSolver):
         if self.cfg['save_best']:
             if self.records['PSNR'] != [] and self.records['PSNR'][-1] == np.array(self.records['PSNR']).max():
                 shutil.copy(os.path.join(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm'] + '/' + str(self.log_name), 'latest.pth'),
-                            os.path.join(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm'] + '/' + str(self.log_name), 'best.pth'))
+                            os.path.join(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm'] + '/' + str(self.log_name), 'PSNR_best.pth'))
+            if self.records['SSIM'] != [] and self.records['SSIM'][-1] == np.array(self.records['SSIM']).max():
+                shutil.copy(os.path.join(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm'] + '/' + str(self.log_name), 'latest.pth'),
+                            os.path.join(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm'] + '/' + str(self.log_name), 'SSIM_best.pth'))
 
     def save_checkpoint_debug(self):
         super(Solver, self).save_checkpoint()
         self.ckp['net'] = self.model.state_dict()
         self.ckp['optimizer'] = self.optimizer.state_dict()
-        if not os.path.exists(self.cfg['checkpoint'] + '/' + str(self.log_name)):
-            os.mkdir(self.cfg['checkpoint'] + '/' + str(self.log_name))
-        torch.save(self.ckp, os.path.join(self.cfg['checkpoint'] + '/' + str(self.log_name), 'latest.pth'))
+        if not os.path.exists(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm'] + '/' + str(self.log_name)):
+            os.makedirs(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm']  + '/' + str(self.log_name))
+        torch.save(self.ckp, os.path.join(self.cfg['checkpoint'] + '/'  + self.cfg['algorithm'] + '/' + str(self.log_name), 'latest.pth'))
 
     def run(self):
         self.check_gpu()

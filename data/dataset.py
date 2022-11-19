@@ -3,7 +3,7 @@
 '''
 @Author: wjm
 @Date: 2019-10-23 14:57:22
-LastEditTime: 2021-11-19 11:44:32
+LastEditTime: 2022-11-19 22:45:58
 @Description: file content
 '''
 import torch.utils.data as data
@@ -17,7 +17,7 @@ import torch.nn.functional as F
 import torch.nn as nn
 
 def is_image_file(filename):
-    return any(filename.endswith(extension) for extension in ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP',])
+    return any(filename.endswith(extension) for extension in ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP', '.tif'])
 
 def load_img(filepath):
     img = Image.open(filepath).convert('RGB')
